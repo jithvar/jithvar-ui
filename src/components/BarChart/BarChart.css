@@ -53,6 +53,60 @@
 }
 
 .jv-bar-chart-axis-label {
-  fill: #9ca3af;
+  fill: #6b7280;
   font-size: 11px;
+}
+
+/* Tooltip Styles */
+.jv-bar-chart-tooltip {
+  position: fixed;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  pointer-events: none;
+  z-index: 10000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  animation: tooltipFadeIn 0.2s ease-out;
+}
+
+.jv-bar-chart-tooltip-label {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.jv-bar-chart-tooltip-value {
+  font-size: 14px;
+  color: #60a5fa;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -100%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -100%) scale(1);
+  }
+}
+
+/* 3D Variant */
+.jv-bar-chart.variant-3d .jv-bar-chart-bar {
+  filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.3));
+}
+
+.jv-bar-chart.variant-3d .jv-bar-chart-bar:hover {
+  filter: drop-shadow(4px 8px 12px rgba(0, 0, 0, 0.4)) brightness(1.1);
+  transform: translateY(-2px);
+}
+
+/* Gradient Variant */
+.jv-bar-chart.variant-gradient .jv-bar-chart-bar {
+  background: linear-gradient(180deg, currentColor 0%, color-mix(in srgb, currentColor, black 20%) 100%);
+}
+
+.jv-bar-chart.variant-gradient .jv-bar-chart-bar:hover {
+  background: linear-gradient(180deg, color-mix(in srgb, currentColor, white 10%) 0%, currentColor 100%);
 }

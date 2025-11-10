@@ -14,7 +14,8 @@ export interface LineChartDataset {
 }
 
 export interface LineChartProps {
-  datasets: LineChartDataset[];
+  data?: LineChartDataPoint[];
+  datasets?: LineChartDataset[];
   width?: number;
   height?: number;
   title?: string;
@@ -22,12 +23,16 @@ export interface LineChartProps {
   showPoints?: boolean;
   animated?: boolean;
   smooth?: boolean;
+  showFill?: boolean;
+  showLegend?: boolean;
+  color?: string;
   className?: string;
 }
 
 const defaultColors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
 
 export const LineChart: React.FC<LineChartProps> = ({
+  data,
   datasets,
   width = 600,
   height = 400,
@@ -36,9 +41,27 @@ export const LineChart: React.FC<LineChartProps> = ({
   showPoints = true,
   animated = true,
   smooth = true,
+  showFill = true,
+  showLegend = false,
+  color = '#3b82f6',
   className = '',
 }) => {
   const [animatedProgress, setAnimatedProgress] = useState(0);
+  const [tooltip, setTooltip] = useState<{ show: boolean; x: number; y: number; label: string; value: number; datasetLabel: string }>({
+    show: false,
+    x: 0,
+    y: 0,
+    label: '',
+    value: 0,
+    datasetLabel: '',
+  });
+
+  // Convert single data to datasets format
+  const normalizedDatasets: LineChartDataset[] = datasets 
+    ? datasets 
+    : data 
+    ? [{ label: 'Data', data, color, fill: showFill }]
+    : [];
 
   useEffect(() => {
     if (animated) {
@@ -50,7 +73,7 @@ export const LineChart: React.FC<LineChartProps> = ({
     } else {
       setAnimatedProgress(1);
     }
-  }, [datasets, animated]);
+  }, [normalizedDatasets, animated]);
 
   const padding = { top: 40, right: 40, bottom: 60, left: 60 };
   const chartWidth = width - padding.left - padding.right;
@@ -58,12 +81,12 @@ export const LineChart: React.FC<LineChartProps> = ({
 
   // Get all unique labels
   const allLabels = Array.from(
-    new Set(datasets.flatMap(ds => ds.data.map(d => d.label)))
+    new Set(normalizedDatasets.flatMap(ds => ds.data.map(d => d.label)))
   );
 
   // Get max value across all datasets
   const maxValue = Math.max(
-    ...datasets.flatMap(ds => ds.data.map(d => d.value))
+    ...normalizedDatasets.flatMap(ds => ds.data.map(d => d.value))
   );
 
   const formatValue = (value: number) => {
@@ -111,7 +134,7 @@ export const LineChart: React.FC<LineChartProps> = ({
   const createFillPath = (data: LineChartDataPoint[]) => {
     if (data.length === 0) return '';
 
-    const linePath = createPath(data, datasets[0]);
+    const linePath = createPath(data, normalizedDatasets[0]);
     const lastX = padding.left + chartWidth;
     const bottomY = padding.top + chartHeight;
     
@@ -181,7 +204,7 @@ export const LineChart: React.FC<LineChartProps> = ({
       
       <svg width={width} height={height} className="jv-line-chart-svg">
         <defs>
-          {datasets.map((dataset, index) => (
+          {normalizedDatasets.map((dataset, index) => (
             <linearGradient
               key={index}
               id={`gradient-${index}`}
@@ -216,7 +239,7 @@ export const LineChart: React.FC<LineChartProps> = ({
         />
         
         {/* Lines and Areas */}
-        {datasets.map((dataset, datasetIndex) => {
+        {normalizedDatasets.map((dataset, datasetIndex) => {
           const color = getColor(datasetIndex, dataset);
           
           return (
@@ -265,6 +288,18 @@ export const LineChart: React.FC<LineChartProps> = ({
                       style={{
                         opacity: animated ? animatedProgress : 1,
                       }}
+                      onMouseEnter={(e) => {
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        setTooltip({
+                          show: true,
+                          x: rect.left + rect.width / 2,
+                          y: rect.top - 10,
+                          label: point.label,
+                          value: point.value,
+                          datasetLabel: dataset.label,
+                        });
+                      }}
+                      onMouseLeave={() => setTooltip({ ...tooltip, show: false })}
                     />
                   </g>
                 );
@@ -275,9 +310,9 @@ export const LineChart: React.FC<LineChartProps> = ({
       </svg>
 
       {/* Legend */}
-      {datasets.length > 1 && (
+      {normalizedDatasets.length > 1 && (
         <div className="jv-line-chart-legend">
-          {datasets.map((dataset, index) => (
+          {normalizedDatasets.map((dataset, index) => (
             <div key={index} className="jv-line-chart-legend-item">
               <div
                 className="jv-line-chart-legend-color"
@@ -286,6 +321,23 @@ export const LineChart: React.FC<LineChartProps> = ({
               <span className="jv-line-chart-legend-label">{dataset.label}</span>
             </div>
           ))}
+        </div>
+      )}
+      
+      {/* Tooltip */}
+      {tooltip.show && (
+        <div
+          className="jv-line-chart-tooltip"
+          style={{
+            position: 'fixed',
+            left: `${tooltip.x}px`,
+            top: `${tooltip.y}px`,
+            transform: 'translate(-50%, -100%)',
+          }}
+        >
+          <div className="jv-line-chart-tooltip-dataset">{tooltip.datasetLabel}</div>
+          <div className="jv-line-chart-tooltip-label">{tooltip.label}</div>
+          <div className="jv-line-chart-tooltip-value">{tooltip.value.toLocaleString()}</div>
         </div>
       )}
     </div>

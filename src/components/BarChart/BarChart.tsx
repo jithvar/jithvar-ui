@@ -18,6 +18,7 @@ export interface BarChartProps {
   animated?: boolean;
   barWidth?: number;
   color?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info';
+  variant?: '2d' | '3d' | 'gradient';
   className?: string;
 }
 
@@ -41,9 +42,17 @@ export const BarChart: React.FC<BarChartProps> = ({
   animated = true,
   barWidth = 40,
   color = 'primary',
+  variant = '2d',
   className = '',
 }) => {
   const [animatedData, setAnimatedData] = useState<BarChartDataPoint[]>([]);
+  const [tooltip, setTooltip] = useState<{ show: boolean; x: number; y: number; label: string; value: number }>({
+    show: false,
+    x: 0,
+    y: 0,
+    label: '',
+    value: 0,
+  });
   const chartRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -94,9 +103,21 @@ export const BarChart: React.FC<BarChartProps> = ({
             y={y}
             width={actualBarWidth}
             height={barHeight}
-            fill={getBarColor(index, item)}
+            fill={getBarFill(index, item)}
             rx={4}
             className="jv-bar-chart-bar"
+            style={variant === '3d' ? { filter: 'drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.3))' } : {}}
+            onMouseEnter={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              setTooltip({
+                show: true,
+                x: rect.left + rect.width / 2,
+                y: rect.top - 10,
+                label: item.label,
+                value: item.value,
+              });
+            }}
+            onMouseLeave={() => setTooltip({ ...tooltip, show: false })}
           />
           
           {/* Value label */}
@@ -142,9 +163,21 @@ export const BarChart: React.FC<BarChartProps> = ({
             y={y}
             width={barWidth}
             height={actualBarHeight}
-            fill={getBarColor(index, item)}
+            fill={getBarFill(index, item)}
             rx={4}
             className="jv-bar-chart-bar"
+            style={variant === '3d' ? { filter: 'drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.3))' } : {}}
+            onMouseEnter={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              setTooltip({
+                show: true,
+                x: rect.right + 10,
+                y: rect.top + rect.height / 2,
+                label: item.label,
+                value: item.value,
+              });
+            }}
+            onMouseLeave={() => setTooltip({ ...tooltip, show: false })}
           />
           
           {/* Value label */}
@@ -230,10 +263,32 @@ export const BarChart: React.FC<BarChartProps> = ({
     return lines;
   };
 
+  const getBarFill = (index: number, item: BarChartDataPoint) => {
+    const baseColor = getBarColor(index, item);
+    if (variant === 'gradient') {
+      return `url(#barGradient${index})`;
+    }
+    return baseColor;
+  };
+
   return (
-    <div className={`jv-bar-chart ${className}`} ref={chartRef}>
+    <div className={`jv-bar-chart variant-${variant} ${className}`} ref={chartRef}>
       {title && <h3 className="jv-bar-chart-title">{title}</h3>}
       <svg width={width} height={height} className="jv-bar-chart-svg">
+        {/* Gradient Definitions */}
+        {variant === 'gradient' && (
+          <defs>
+            {animatedData.map((item, index) => {
+              const color = getBarColor(index, item);
+              return (
+                <linearGradient key={index} id={`barGradient${index}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor={color} stopOpacity="1" />
+                  <stop offset="100%" stopColor={color} stopOpacity="0.6" />
+                </linearGradient>
+              );
+            })}
+          </defs>
+        )}
         {/* Grid */}
         {showGrid && renderGrid()}
         
@@ -256,6 +311,22 @@ export const BarChart: React.FC<BarChartProps> = ({
         {/* Bars */}
         {orientation === 'vertical' ? renderVerticalBars() : renderHorizontalBars()}
       </svg>
+      
+      {/* Tooltip */}
+      {tooltip.show && (
+        <div
+          className="jv-bar-chart-tooltip"
+          style={{
+            position: 'fixed',
+            left: `${tooltip.x}px`,
+            top: `${tooltip.y}px`,
+            transform: 'translate(-50%, -100%)',
+          }}
+        >
+          <div className="jv-bar-chart-tooltip-label">{tooltip.label}</div>
+          <div className="jv-bar-chart-tooltip-value">{formatValue(tooltip.value)}</div>
+        </div>
+      )}
     </div>
   );
 };

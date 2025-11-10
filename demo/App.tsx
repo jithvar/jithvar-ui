@@ -24,6 +24,18 @@ import { BarChartDemo } from './pages/BarChartDemo';
 import { PieChartDemo } from './pages/PieChartDemo';
 import { DonutChartDemo } from './pages/DonutChartDemo';
 import { LineChartDemo } from './pages/LineChartDemo';
+import { AreaChartDemo } from './pages/AreaChartDemo';
+import { GaugeChartDemo } from './pages/GaugeChartDemo';
+import { ScatterPlotDemo } from './pages/ScatterPlotDemo';
+import { BubbleChartDemo } from './pages/BubbleChartDemo';
+import { RadarChartDemo } from './pages/RadarChartDemo';
+import { FunnelChartDemo } from './pages/FunnelChartDemo';
+import { HeatmapChartDemo } from './pages/HeatmapChartDemo';
+import { StackedBarChartDemo } from './pages/StackedBarChartDemo';
+import { WaterfallChartDemo } from './pages/WaterfallChartDemo';
+import { HistogramChartDemo } from './pages/HistogramChartDemo';
+import { CandlestickChartDemo } from './pages/CandlestickChartDemo';
+import ComboChartDemo from './pages/ComboChartDemo';
 
 const navItems = [
   { path: '/', label: '🏠 Dashboard', component: Dashboard },
@@ -68,6 +80,18 @@ const navItems = [
       { path: '/charts/pie-charts', label: '🥧 Pie Charts', component: PieChartDemo },
       { path: '/charts/donut-charts', label: '🍩 Donut Charts', component: DonutChartDemo },
       { path: '/charts/line-charts', label: '📈 Line Charts', component: LineChartDemo },
+      { path: '/charts/area-charts', label: '📉 Area Charts', component: AreaChartDemo },
+      { path: '/charts/gauge-charts', label: '🎯 Gauge Charts', component: GaugeChartDemo },
+      { path: '/charts/scatter-plots', label: '🔵 Scatter Plots', component: ScatterPlotDemo },
+      { path: '/charts/bubble-charts', label: '🫧 Bubble Charts', component: BubbleChartDemo },
+      { path: '/charts/radar-charts', label: '🕸️ Radar Charts', component: RadarChartDemo },
+      { path: '/charts/funnel-charts', label: '🔻 Funnel Charts', component: FunnelChartDemo },
+      { path: '/charts/heatmap-charts', label: '🔥 Heatmap Charts', component: HeatmapChartDemo },
+      { path: '/charts/stacked-bar-charts', label: '📊 Stacked Bar Charts', component: StackedBarChartDemo },
+      { path: '/charts/waterfall-charts', label: '💧 Waterfall Charts', component: WaterfallChartDemo },
+      { path: '/charts/histogram-charts', label: '📊 Histogram Charts', component: HistogramChartDemo },
+      { path: '/charts/candlestick-charts', label: '🕯️ Candlestick Charts', component: CandlestickChartDemo },
+      { path: '/charts/combo-charts', label: '🔀 Combo Charts', component: ComboChartDemo },
     ]
   },
   { path: '/configuration', label: '⚙️ Configuration', component: ConfigurationGuide },

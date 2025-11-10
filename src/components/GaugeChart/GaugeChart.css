@@ -1,0 +1,6 @@
+.jv-gauge-chart { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; justify-content: center; }
+.jv-gauge-arc { transition: all 0.6s ease; }
+.jv-gauge-needle { transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+.jv-gauge-value { fill: #1f2937; font-size: 32px; font-weight: 700; }
+.jv-gauge-label { fill: #6b7280; font-size: 14px; font-weight: 500; }
+.jv-gauge-limit { fill: #9ca3af; font-size: 12px; }

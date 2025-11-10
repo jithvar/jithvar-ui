@@ -1,0 +1,116 @@
+.jv-histogram-chart-container {
+  display: inline-block;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.jv-histogram-chart-title {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 16px 0;
+  color: #1f2937;
+}
+
+.jv-histogram-chart {
+  display: block;
+}
+
+.jv-histogram-bar {
+  cursor: pointer;
+  transition: opacity 0.2s ease, filter 0.2s ease;
+}
+
+.jv-histogram-bar:hover {
+  opacity: 0.9;
+  filter: brightness(1.1);
+}
+
+.jv-histogram-animated .jv-histogram-bar {
+  animation: jv-histogram-grow 0.6s ease-out both;
+}
+
+.jv-histogram-mean-line,
+.jv-histogram-median-line {
+  opacity: 0.8;
+}
+
+/* Statistics */
+.jv-histogram-stats {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 24px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.jv-histogram-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.jv-histogram-stat-label {
+  font-size: 12px;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+}
+
+.jv-histogram-stat-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+/* Tooltip */
+.jv-histogram-tooltip {
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  pointer-events: none;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: jv-histogram-tooltip-fade-in 0.2s ease-out;
+}
+
+.jv-histogram-tooltip-range {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.jv-histogram-tooltip-count,
+.jv-histogram-tooltip-percentage {
+  font-size: 12px;
+  margin: 2px 0;
+}
+
+/* Animations */
+@keyframes jv-histogram-grow {
+  from {
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+}
+
+@keyframes jv-histogram-tooltip-fade-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -100%) translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -100%) translateY(0);
+  }
+}

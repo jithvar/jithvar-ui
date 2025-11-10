@@ -44,6 +44,14 @@ export const PieChart: React.FC<PieChartProps> = ({
   className = '',
 }) => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [tooltip, setTooltip] = useState<{ show: boolean; x: number; y: number; label: string; value: number; percentage: number }>({
+    show: false,
+    x: 0,
+    y: 0,
+    label: '',
+    value: 0,
+    percentage: 0,
+  });
 
   const total = data.reduce((sum, item) => sum + item.value, 0);
   const centerX = width / 2;
@@ -129,8 +137,22 @@ export const PieChart: React.FC<PieChartProps> = ({
             return (
               <g
                 key={index}
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(null)}
+                onMouseEnter={(e) => {
+                  setHoveredIndex(index);
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  setTooltip({
+                    show: true,
+                    x: rect.left + rect.width / 2,
+                    y: rect.top + rect.height / 2,
+                    label: item.label,
+                    value: item.value,
+                    percentage,
+                  });
+                }}
+                onMouseLeave={() => {
+                  setHoveredIndex(null);
+                  setTooltip({ ...tooltip, show: false });
+                }}
                 className="jv-pie-chart-slice-group"
               >
                 <path
@@ -179,6 +201,23 @@ export const PieChart: React.FC<PieChartProps> = ({
           </div>
         )}
       </div>
+      
+      {/* Tooltip */}
+      {tooltip.show && (
+        <div
+          className="jv-pie-chart-tooltip"
+          style={{
+            position: 'fixed',
+            left: `${tooltip.x}px`,
+            top: `${tooltip.y}px`,
+            transform: 'translate(-50%, -50%)',
+          }}
+        >
+          <div className="jv-pie-chart-tooltip-label">{tooltip.label}</div>
+          <div className="jv-pie-chart-tooltip-value">{tooltip.value.toLocaleString()}</div>
+          <div className="jv-pie-chart-tooltip-percentage">{tooltip.percentage.toFixed(1)}%</div>
+        </div>
+      )}
     </div>
   );
 };

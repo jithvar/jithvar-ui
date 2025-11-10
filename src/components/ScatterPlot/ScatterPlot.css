@@ -1,0 +1,8 @@
+.jv-scatter-plot { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.jv-scatter-plot-title { margin: 0 0 20px 0; font-size: 20px; font-weight: 600; color: #1f2937; text-align: center; }
+.jv-scatter-plot-point { cursor: pointer; transition: all 0.2s; }
+.jv-scatter-plot-point:hover { r: 8; filter: brightness(1.2); }
+.jv-scatter-plot-grid { stroke: #e5e7eb; stroke-width: 1; stroke-dasharray: 4 4; }
+.jv-scatter-plot-label { fill: #6b7280; font-size: 11px; }
+.jv-scatter-plot-axis-title { fill: #374151; font-size: 13px; font-weight: 600; }
+.jv-scatter-plot-tooltip { background: rgba(0,0,0,0.9); color: white; padding: 8px 12px; border-radius: 6px; font-size: 12px; pointer-events: none; z-index: 10000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }

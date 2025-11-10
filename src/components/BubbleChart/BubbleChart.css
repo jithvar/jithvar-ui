@@ -1,0 +1,108 @@
+/* Bubble Chart Styles */
+.jv-bubble-chart {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.jv-bubble-chart-title {
+  margin: 0 0 20px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
+  text-align: center;
+}
+
+.jv-bubble-chart-svg {
+  display: block;
+  margin: 0 auto;
+}
+
+.jv-bubble-chart-bubble {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.jv-bubble-chart-bubble:hover {
+  opacity: 0.9 !important;
+  filter: brightness(1.1);
+  transform: scale(1.05);
+}
+
+.jv-bubble-chart-grid-line {
+  stroke: #e5e7eb;
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+
+.jv-bubble-chart-axis {
+  stroke: #9ca3af;
+  stroke-width: 2;
+}
+
+.jv-bubble-chart-axis-label {
+  fill: #6b7280;
+  font-size: 11px;
+}
+
+.jv-bubble-chart-axis-title {
+  fill: #374151;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.jv-bubble-chart-label {
+  fill: white;
+  font-size: 12px;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Tooltip */
+.jv-bubble-chart-tooltip {
+  position: fixed;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  pointer-events: none;
+  z-index: 10000;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  animation: tooltipFadeIn 0.2s ease-out;
+  min-width: 120px;
+}
+
+.jv-bubble-chart-tooltip-label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 4px;
+}
+
+.jv-bubble-chart-tooltip-data {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.jv-bubble-chart-tooltip-data div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -100%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -100%) scale(1);
+  }
+}

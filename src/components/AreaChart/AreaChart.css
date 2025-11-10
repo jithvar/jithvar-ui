@@ -1,12 +1,12 @@
-/* Line Chart Styles */
-.jv-line-chart {
+/* Area Chart Styles */
+.jv-area-chart {
   background: white;
   border-radius: 12px;
   padding: 24px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.jv-line-chart-title {
+.jv-area-chart-title {
   margin: 0 0 20px 0;
   font-size: 20px;
   font-weight: 600;
@@ -14,53 +14,47 @@
   text-align: center;
 }
 
-.jv-line-chart-svg {
+.jv-area-chart-svg {
   display: block;
   margin: 0 auto;
 }
 
-.jv-line-chart-line {
-  transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+.jv-area-chart-area {
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.jv-line-chart-area {
-  transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+.jv-area-chart-line {
+  transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.jv-line-chart-point {
+.jv-area-chart-point {
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
-.jv-line-chart-point:hover {
+.jv-area-chart-point:hover {
   r: 7;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0 0 4px currentColor);
 }
 
-.jv-line-chart-grid-line {
+.jv-area-chart-grid-line {
   stroke: #e5e7eb;
   stroke-width: 1;
   stroke-dasharray: 4 4;
 }
 
-.jv-line-chart-axis {
+.jv-area-chart-axis {
   stroke: #9ca3af;
   stroke-width: 2;
 }
 
-.jv-line-chart-label {
+.jv-area-chart-axis-label {
   fill: #6b7280;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-.jv-line-chart-axis-label {
-  fill: #9ca3af;
   font-size: 11px;
 }
 
 /* Legend */
-.jv-line-chart-legend {
+.jv-area-chart-legend {
   display: flex;
   justify-content: center;
   gap: 24px;
@@ -68,26 +62,27 @@
   flex-wrap: wrap;
 }
 
-.jv-line-chart-legend-item {
+.jv-area-chart-legend-item {
   display: flex;
   align-items: center;
   gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
 }
 
-.jv-line-chart-legend-color {
-  width: 24px;
-  height: 3px;
-  border-radius: 2px;
+.jv-area-chart-legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
 }
 
-.jv-line-chart-legend-label {
-  font-size: 13px;
-  color: #6b7280;
+.jv-area-chart-legend-label {
+  color: #374151;
   font-weight: 500;
 }
 
-/* Tooltip Styles */
-.jv-line-chart-tooltip {
+/* Tooltip */
+.jv-area-chart-tooltip {
   position: fixed;
   background: rgba(0, 0, 0, 0.9);
   color: white;
@@ -101,7 +96,7 @@
   min-width: 100px;
 }
 
-.jv-line-chart-tooltip-dataset {
+.jv-area-chart-tooltip-dataset {
   font-weight: 600;
   margin-bottom: 2px;
   font-size: 11px;
@@ -110,13 +105,13 @@
   letter-spacing: 0.5px;
 }
 
-.jv-line-chart-tooltip-label {
+.jv-area-chart-tooltip-label {
   font-weight: 600;
   margin-bottom: 4px;
   font-size: 14px;
 }
 
-.jv-line-chart-tooltip-value {
+.jv-area-chart-tooltip-value {
   color: #60a5fa;
   font-size: 16px;
   font-weight: 700;

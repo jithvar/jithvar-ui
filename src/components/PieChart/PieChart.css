@@ -106,3 +106,47 @@
   color: #6b7280;
   font-weight: 600;
 }
+
+/* Tooltip Styles */
+.jv-pie-chart-tooltip {
+  position: fixed;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  pointer-events: none;
+  z-index: 10000;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  animation: tooltipFadeIn 0.2s ease-out;
+  min-width: 120px;
+}
+
+.jv-pie-chart-tooltip-label {
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.jv-pie-chart-tooltip-value {
+  color: #60a5fa;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.jv-pie-chart-tooltip-percentage {
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
