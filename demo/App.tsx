@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import './demo.css';
 import { ScrollToTop } from './components/ScrollToTop';
@@ -76,6 +76,23 @@ const navItems = [
 const Sidebar: React.FC = () => {
   const location = useLocation();
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
+
+  // Auto-expand category containing the current route
+  useEffect(() => {
+    const currentCategory = navItems.find((item: any) => {
+      if (item.category && item.items) {
+        return item.items.some((subItem: any) => subItem.path === location.pathname);
+      }
+      return false;
+    });
+
+    if (currentCategory && currentCategory.category) {
+      setExpandedCategories(prev => ({
+        ...prev,
+        [currentCategory.category]: true
+      }));
+    }
+  }, [location.pathname]);
 
   const toggleCategory = (category: string) => {
     setExpandedCategories(prev => ({
