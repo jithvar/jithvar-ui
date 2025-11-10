@@ -125,3 +125,6 @@ export interface JTableProps {
   bordered?: boolean;
   compact?: boolean;
 }
+
+// JAlerts Types
+export type { JAlertOptions, JAlertButton, JAlertResult } from './alerts';

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { JTable, JTableColumn, JTableAction } from '../../src';
 import { CodeBlock } from '../components/CodeBlock';
 import { mockAPI } from '../mockAPI';
+import SkeletonLoader from '../components/SkeletonLoader';
 
 // Override fetch for the demo
 const originalFetch = window.fetch;
@@ -15,6 +16,30 @@ window.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
 
 export const JTableDemo: React.FC = () => {
   const [selectedRows, setSelectedRows] = useState<any[]>([]);
+  const [loadingSections, setLoadingSections] = useState({
+    header: true,
+    table: true,
+    features: true,
+  });
+
+  // Simulate progressive loading
+  useEffect(() => {
+    const timeouts: NodeJS.Timeout[] = [];
+    
+    timeouts.push(setTimeout(() => {
+      setLoadingSections(prev => ({ ...prev, header: false }));
+    }, 300));
+    
+    timeouts.push(setTimeout(() => {
+      setLoadingSections(prev => ({ ...prev, table: false }));
+    }, 600));
+    
+    timeouts.push(setTimeout(() => {
+      setLoadingSections(prev => ({ ...prev, features: false }));
+    }, 900));
+
+    return () => timeouts.forEach(t => clearTimeout(t));
+  }, []);
 
   const columns: JTableColumn[] = [
     {
@@ -211,13 +236,24 @@ const floatingActions: JTableFloatingConfig = {
 
   return (
     <div className="jv-demo-page">
-      <h1>📊 JTable</h1>
-      <p className="jv-subtitle">Advanced data table with server-side operations and floating actions</p>
+      {loadingSections.header ? (
+        <div style={{ marginBottom: '32px' }}>
+          <SkeletonLoader type="section" count={1} />
+        </div>
+      ) : (
+        <>
+          <h1>📊 JTable</h1>
+          <p className="jv-subtitle">Advanced data table with server-side operations and floating actions</p>
+        </>
+      )}
 
-      <section className="jv-section">
-        <h2>🎈 Live Demo - Floating Actions</h2>
-        <p><strong>Hover over any row</strong> to see the floating action buttons appear on the left side!</p>
-        <div className="jv-demo-preview">
+      {loadingSections.table ? (
+        <SkeletonLoader type="table" />
+      ) : (
+        <section className="jv-section">
+          <h2>🎈 Live Demo - Floating Actions</h2>
+          <p><strong>Hover over any row</strong> to see the floating action buttons appear on the left side!</p>
+          <div className="jv-demo-preview">
           <JTable
             columns={columns}
             apiUrl="https://mock-api/users"
@@ -346,50 +382,59 @@ const floatingActions: JTableFloatingConfig = {
             striped={true}
             hover={true}
           />
-        </div>
-        {selectedRows.length > 0 && (
-          <div className="jv-info-box">
-            Selected {selectedRows.length} row(s): {selectedRows.map(r => r.name).join(', ')}
           </div>
-        )}
-        <div className="jv-info-box" style={{ marginTop: '16px', background: '#fef3c7', borderLeft: '4px solid #f59e0b' }}>
-          <strong>💡 Note:</strong> Floating actions appear to the <strong>left of each row</strong> when you hover over it. Each button has a different color based on its variant (info=cyan, primary=blue, warning=orange, danger=red, success=green, secondary=gray).
-        </div>
-      </section>
+          {selectedRows.length > 0 && (
+            <div className="jv-info-box">
+              Selected {selectedRows.length} row(s): {selectedRows.map(r => r.name).join(', ')}
+            </div>
+          )}
+          <div className="jv-info-box" style={{ marginTop: '16px', background: '#fef3c7', borderLeft: '4px solid #f59e0b' }}>
+            <strong>💡 Note:</strong> Floating actions appear to the <strong>left of each row</strong> when you hover over it. Each button has a different color based on its variant (info=cyan, primary=blue, warning=orange, danger=red, success=green, secondary=gray).
+          </div>
+        </section>
+      )}
 
-      <section className="jv-section">
-        <h2>📍 Live Demo - Action Column</h2>
-        <p>Traditional action buttons in a dedicated column (always visible).</p>
-        <div className="jv-demo-preview">
-          <JTable
-            columns={columns}
-            apiUrl="https://mock-api/users"
-            enableUniversalSearch={true}
-            enableColumnSearch={true}
-            enableSelection={true}
-            enablePagination={true}
-            actions={actions}
-            onSelectionChange={setSelectedRows}
-            striped={true}
-            hover={true}
-          />
-        </div>
-        <div className="jv-info-box" style={{ marginTop: '16px' }}>
-          <strong>📍 Action Column:</strong> These buttons are always visible in a dedicated column on the right side. Use this when you want actions to be immediately visible without hovering.
-        </div>
-      </section>
+      {loadingSections.table ? (
+        <SkeletonLoader type="table" />
+      ) : (
+        <section className="jv-section">
+          <h2>📍 Live Demo - Action Column</h2>
+          <p>Traditional action buttons in a dedicated column (always visible).</p>
+          <div className="jv-demo-preview">
+            <JTable
+              columns={columns}
+              apiUrl="https://mock-api/users"
+              enableUniversalSearch={true}
+              enableColumnSearch={true}
+              enableSelection={true}
+              enablePagination={true}
+              actions={actions}
+              onSelectionChange={setSelectedRows}
+              striped={true}
+              hover={true}
+            />
+          </div>
+          <div className="jv-info-box" style={{ marginTop: '16px' }}>
+            <strong>📍 Action Column:</strong> These buttons are always visible in a dedicated column on the right side. Use this when you want actions to be immediately visible without hovering.
+          </div>
+        </section>
+      )}
 
-      <section className="jv-section">
-        <h2>📝 Basic Usage</h2>
-        <p>Minimal setup with essential features: sorting, searching, and pagination.</p>
-        <CodeBlock code={basicExample} />
-        <div className="jv-info-box">
-          <strong>✅ What it includes:</strong> Universal search, sortable columns, and pagination
-        </div>
-      </section>
+      {loadingSections.features ? (
+        <SkeletonLoader type="section" count={2} />
+      ) : (
+        <>
+          <section className="jv-section">
+            <h2>📝 Basic Usage</h2>
+            <p>Minimal setup with essential features: sorting, searching, and pagination.</p>
+            <CodeBlock code={basicExample} />
+            <div className="jv-info-box">
+              <strong>✅ What it includes:</strong> Universal search, sortable columns, and pagination
+            </div>
+          </section>
 
-      <section className="jv-section">
-        <h2>🎨 Advanced Usage - With All Features</h2>
+          <section className="jv-section">
+            <h2>🎨 Advanced Usage - With All Features</h2>
         <p>Comprehensive example showcasing all available features including filters, date ranges, and custom rendering.</p>
         <CodeBlock code={`import { JTable, JTableColumn } from 'jithvar-ui';
 
@@ -891,14 +936,16 @@ export const UsersTable = () => {
   );
 };`} />
         
-        <div className="jv-info-box" style={{ marginTop: '24px' }}>
-          <strong>📖 Complete Documentation:</strong>
-          <p style={{ marginTop: '8px' }}>
-            For more detailed documentation, examples, and API references, see the{' '}
-            <code>COMPONENTS_GUIDE.md</code> file in the repository root.
-          </p>
-        </div>
-      </section>
+            <div className="jv-info-box" style={{ marginTop: '24px' }}>
+              <strong>📖 Complete Documentation:</strong>
+              <p style={{ marginTop: '8px' }}>
+                For more detailed documentation, examples, and API references, see the{' '}
+                <code>COMPONENTS_GUIDE.md</code> file in the repository root.
+              </p>
+            </div>
+          </section>
+        </>
+      )}
     </div>
   );
 };

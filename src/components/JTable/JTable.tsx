@@ -913,7 +913,33 @@ export const JTable: React.FC<JTableProps> = ({
           </thead>
 
           <tbody className="jv-jtable-tbody">
-            {!loading && !error && data.length === 0 ? (
+            {loading ? (
+              // Show skeleton rows while loading
+              Array.from({ length: state.pageSize || 10 }).map((_, skeletonIndex) => (
+                <tr key={`skeleton-${skeletonIndex}`} className="jv-jtable-skeleton-row">
+                  {enableSelection && (
+                    <td className="jv-jtable-checkbox-column">
+                      <div className="jv-jtable-skeleton jv-jtable-skeleton-checkbox" />
+                    </td>
+                  )}
+                  {hasActions && actionColumnPosition === 'left' && (
+                    <td className="jv-jtable-action-column">
+                      <div className="jv-jtable-skeleton jv-jtable-skeleton-action" />
+                    </td>
+                  )}
+                  {visibleColumnsData.map((column) => (
+                    <td key={column.key}>
+                      <div className="jv-jtable-skeleton jv-jtable-skeleton-cell" />
+                    </td>
+                  ))}
+                  {hasActions && actionColumnPosition === 'right' && (
+                    <td className="jv-jtable-action-column">
+                      <div className="jv-jtable-skeleton jv-jtable-skeleton-action" />
+                    </td>
+                  )}
+                </tr>
+              ))
+            ) : !error && data.length === 0 ? (
               <tr>
                 <td
                   colSpan={

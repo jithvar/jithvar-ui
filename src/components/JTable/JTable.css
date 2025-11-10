@@ -300,6 +300,44 @@
   margin: 1rem;
 }
 
+/* Skeleton Loading */
+.jv-jtable-skeleton-row {
+  pointer-events: none;
+}
+
+.jv-jtable-skeleton {
+  height: 20px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: jv-jtable-shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+.jv-jtable-skeleton-checkbox {
+  width: 18px;
+  height: 18px;
+  margin: 0 auto;
+}
+
+.jv-jtable-skeleton-cell {
+  width: 100%;
+  max-width: 200px;
+}
+
+.jv-jtable-skeleton-action {
+  width: 80px;
+  height: 32px;
+}
+
+@keyframes jv-jtable-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
 /* Table */
 .jv-jtable-table {
   width: 100%;

@@ -1,0 +1,54 @@
+/* CheckboxList Component Styles */
+.jv-checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.jv-checkbox-list-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 4px;
+}
+
+.jv-checkbox-list-helper {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.jv-checkbox-list-error {
+  font-size: 12px;
+  color: #ef4444;
+  margin-bottom: 8px;
+}
+
+.jv-checkbox-list-select-all {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.jv-checkbox-list-divider {
+  height: 1px;
+  background: linear-gradient(90deg, #e5e7eb 0%, transparent 100%);
+  margin: 4px 0;
+}
+
+.jv-checkbox-list-options {
+  display: flex;
+  gap: 16px;
+}
+
+.jv-checkbox-list-options.vertical {
+  flex-direction: column;
+  gap: 12px;
+}
+
+.jv-checkbox-list-options.horizontal {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 16px;
+}

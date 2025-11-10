@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { App } from './App';
 import { mockAPI } from './mockAPI';
 import './newDemo.css';
+import './tailwind-utils.css';
 
 // Override fetch for the demo to use mock API
 const originalFetch = window.fetch;

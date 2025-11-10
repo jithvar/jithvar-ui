@@ -1,0 +1,41 @@
+/* RadioGroup Component Styles */
+.jv-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.jv-radio-group-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 4px;
+}
+
+.jv-radio-group-helper {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.jv-radio-group-error {
+  font-size: 12px;
+  color: #ef4444;
+  margin-bottom: 8px;
+}
+
+.jv-radio-group-options {
+  display: flex;
+  gap: 16px;
+}
+
+.jv-radio-group-options.vertical {
+  flex-direction: column;
+  gap: 12px;
+}
+
+.jv-radio-group-options.horizontal {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 16px;
+}

@@ -9,16 +9,55 @@ export const ConfigurationGuide: React.FC = () => {
 
       <section className="jv-section">
         <h2>📋 Table of Contents</h2>
-        <ul className="jv-feature-list">
-          <li><a href="#field-customization">1. Field Name Customization (ID, Label, Value)</a></li>
-          <li><a href="#css-customization">2. CSS Styling & Theming</a></li>
-          <li><a href="#size-customization">3. Height, Width & Sizing</a></li>
-          <li><a href="#jtable-config">4. JTable Configuration</a></li>
-          <li><a href="#date-picker-config">5. DatePicker Configuration</a></li>
-          <li><a href="#select-config">6. SearchableSelect Configuration</a></li>
-          <li><a href="#slider-config">7. RangeSlider Configuration</a></li>
-          <li><a href="#advanced-customization">8. Advanced Customization</a></li>
-        </ul>
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+          gap: '16px',
+          marginTop: '24px'
+        }}>
+          {[
+            { href: '#field-customization', icon: '🔤', title: 'Field Name Customization', desc: 'ID, Label, Value fields' },
+            { href: '#css-customization', icon: '🎨', title: 'CSS Styling & Theming', desc: 'Custom styles & themes' },
+            { href: '#size-customization', icon: '📐', title: 'Height, Width & Sizing', desc: 'Component dimensions' },
+            { href: '#jtable-config', icon: '📊', title: 'JTable Configuration', desc: 'Table settings & features' },
+            { href: '#date-picker-config', icon: '📅', title: 'DatePicker Configuration', desc: 'Date selection options' },
+            { href: '#select-config', icon: '🔍', title: 'SearchableSelect', desc: 'Dropdown configuration' },
+            { href: '#slider-config', icon: '🎚️', title: 'RangeSlider Configuration', desc: 'Slider customization' },
+            { href: '#advanced-customization', icon: '⚡', title: 'Advanced Customization', desc: 'Advanced features' },
+          ].map((item, index) => (
+            <a
+              key={index}
+              href={item.href}
+              style={{
+                display: 'block',
+                padding: '20px',
+                background: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
+                borderRadius: '12px',
+                textDecoration: 'none',
+                color: 'inherit',
+                border: '2px solid #bae6fd',
+                transition: 'all 0.3s ease',
+                cursor: 'pointer',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-4px)';
+                e.currentTarget.style.boxShadow = '0 12px 24px rgba(14, 165, 233, 0.2)';
+                e.currentTarget.style.borderColor = '#0ea5e9';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'none';
+                e.currentTarget.style.borderColor = '#bae6fd';
+              }}
+            >
+              <div style={{ fontSize: '32px', marginBottom: '8px' }}>{item.icon}</div>
+              <div style={{ fontWeight: '600', fontSize: '16px', color: '#0c4a6e', marginBottom: '4px' }}>
+                {index + 1}. {item.title}
+              </div>
+              <div style={{ fontSize: '14px', color: '#64748b' }}>{item.desc}</div>
+            </a>
+          ))}
+        </div>
       </section>
 
       <section className="jv-section" id="field-customization">
