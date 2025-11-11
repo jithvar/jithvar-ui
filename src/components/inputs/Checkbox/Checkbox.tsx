@@ -15,6 +15,9 @@ export interface CheckboxProps {
   error?: boolean;
   errorMessage?: string;
   className?: string;
+  containerClassName?: string;
+  labelClassName?: string;
+  inputClassName?: string;
   id?: string;
 }
 

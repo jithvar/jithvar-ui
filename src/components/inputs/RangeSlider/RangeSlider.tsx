@@ -8,6 +8,7 @@ export interface RangeSliderProps {
   value?: [number, number];
   onChange?: (value: [number, number]) => void;
   className?: string;
+  containerClassName?: string;
   disabled?: boolean;
   showLabels?: boolean;
   showTooltip?: boolean;
@@ -21,6 +22,7 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
   value,
   onChange,
   className = '',
+  containerClassName = '',
   disabled = false,
   showLabels = true,
   showTooltip = true,
@@ -112,7 +114,7 @@ export const RangeSlider: React.FC<RangeSliderProps> = ({
   };
 
   return (
-    <div className={`jv-range-slider ${className} ${disabled ? 'jv-range-slider-disabled' : ''}`}>
+    <div className={`jv-range-slider ${className} ${containerClassName} ${disabled ? 'jv-range-slider-disabled' : ''}`}>
       {showLabels && (
         <div className="jv-range-slider-labels">
           <span className="jv-range-slider-label">{formatLabel(values[0])}</span>

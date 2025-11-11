@@ -132,13 +132,35 @@ yarn add jithvar-ui
 pnpm add jithvar-ui
 ```
 
-### Peer Dependencies
+### Requirements
 
-Jithvar UI requires React 17+ or React 18+:
+- **React**: 17.0.0 - 18.x (React 19 not yet supported)
+- **React DOM**: 17.0.0 - 18.x
+- **Next.js** (optional): 13.x - 15.x
 
 ```bash
-npm install react react-dom
+npm install react@18 react-dom@18
 ```
+
+### 🌳 Tree-Shaking: Import Only What You Need
+
+Jithvar UI is fully tree-shakeable! Import only the components you use to keep your bundle size minimal:
+
+```tsx
+// ✅ Import only what you need - tree-shaking works automatically
+import { DatePicker, BarChart, JTable } from 'jithvar-ui';
+
+// ✅ Or use deep imports for smallest bundle
+import { DatePicker } from 'jithvar-ui/dist/components/inputs/DatePicker';
+import { BarChart } from 'jithvar-ui/dist/components/charts/BarChart';
+
+// ❌ Don't import everything
+import * as JithvarUI from 'jithvar-ui'; // This imports the entire library!
+```
+
+**Bundle Size**: Only ~15-30 KB per component (gzipped)! Use 1 component or 10 - you only pay for what you use.
+
+📖 See [INSTALLATION.md](./INSTALLATION.md) for detailed tree-shaking guide.
 
 ## 📖 Quick Start
 

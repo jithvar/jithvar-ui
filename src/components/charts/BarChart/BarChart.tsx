@@ -20,6 +20,10 @@ export interface BarChartProps {
   color?: 'primary' | 'secondary' | 'success' | 'warning' | 'danger' | 'info';
   variant?: '2d' | '3d' | 'gradient';
   className?: string;
+  containerClassName?: string;
+  titleClassName?: string;
+  chartClassName?: string;
+  legendClassName?: string;
 }
 
 const colorMap = {

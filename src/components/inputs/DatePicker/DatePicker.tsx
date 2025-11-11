@@ -6,9 +6,12 @@ export interface DatePickerProps {
   onChange?: (date: Date | null) => void;
   placeholder?: string;
   className?: string;
+  containerClassName?: string;
+  inputClassName?: string;
   minDate?: Date;
   maxDate?: Date;
   disabled?: boolean;
+  dateFormat?: 'MM/DD/YYYY' | 'DD/MM/YYYY' | 'YYYY-MM-DD' | 'MMM DD, YYYY' | 'DD MMM YYYY' | ((date: Date) => string);
 }
 
 export const DatePicker: React.FC<DatePickerProps> = ({
@@ -16,9 +19,12 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   onChange,
   placeholder = 'Select date',
   className = '',
+  containerClassName = '',
+  inputClassName = '',
   minDate,
   maxDate,
   disabled = false,
+  dateFormat = 'MMM DD, YYYY',
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(value || null);
@@ -116,7 +122,32 @@ export const DatePicker: React.FC<DatePickerProps> = ({
 
   const formatDate = (date: Date | null): string => {
     if (!date) return '';
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    
+    // If custom formatter function is provided
+    if (typeof dateFormat === 'function') {
+      return dateFormat(date);
+    }
+    
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const monthName = monthNames[date.getMonth()];
+    
+    switch (dateFormat) {
+      case 'MM/DD/YYYY':
+        return `${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}/${year}`;
+      case 'DD/MM/YYYY':
+        return `${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`;
+      case 'YYYY-MM-DD':
+        return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+      case 'MMM DD, YYYY':
+        return `${monthName} ${day}, ${year}`;
+      case 'DD MMM YYYY':
+        return `${day} ${monthName} ${year}`;
+      default:
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
   };
 
   const renderCalendar = () => {
@@ -178,7 +209,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
   };
 
   return (
-    <div className={`jv-datepicker ${className}`} ref={containerRef}>
+    <div className={`jv-datepicker ${className} ${containerClassName}`} ref={containerRef}>
       <div
         className={`jv-datepicker-input ${disabled ? 'jv-datepicker-input-disabled' : ''}`}
         onClick={() => !disabled && setIsOpen(!isOpen)}
@@ -187,7 +218,7 @@ export const DatePicker: React.FC<DatePickerProps> = ({
           type="text"
           readOnly
           value={formatDate(selectedDate)}
-          className="jv-datepicker-input-field"
+          className={`jv-datepicker-input-field ${inputClassName}`}
           placeholder={placeholder}
           disabled={disabled}
         />

@@ -15,6 +15,8 @@ export interface MaskInputProps {
   label?: string;
   showMaskOnFocus?: boolean;
   className?: string;
+  containerClassName?: string;
+  inputClassName?: string;
 }
 
 export const MaskInput: React.FC<MaskInputProps> = ({
@@ -31,6 +33,8 @@ export const MaskInput: React.FC<MaskInputProps> = ({
   label,
   showMaskOnFocus = true,
   className = '',
+  containerClassName = '',
+  inputClassName = '',
 }) => {
   const [internalValue, setInternalValue] = useState(defaultValue);
   const [isFocused, setIsFocused] = useState(false);
@@ -111,7 +115,7 @@ export const MaskInput: React.FC<MaskInputProps> = ({
   };
 
   return (
-    <div className={`jv-mask-input-wrapper ${className}`}>
+    <div className={`jv-mask-input-wrapper ${className} ${containerClassName}`}>
       {label && <label className="jv-mask-input-label">{label}</label>}
       <input
         ref={inputRef}
@@ -123,7 +127,7 @@ export const MaskInput: React.FC<MaskInputProps> = ({
         onBlur={() => setIsFocused(false)}
         placeholder={getPlaceholder()}
         disabled={disabled}
-        className={`jv-mask-input ${size} ${error ? 'error' : ''} ${disabled ? 'disabled' : ''}`}
+        className={`jv-mask-input ${size} ${error ? 'error' : ''} ${disabled ? 'disabled' : ''} ${inputClassName}`}
       />
       {helperText && !error && <span className="jv-mask-input-helper">{helperText}</span>}
       {error && errorMessage && <span className="jv-mask-input-error">{errorMessage}</span>}

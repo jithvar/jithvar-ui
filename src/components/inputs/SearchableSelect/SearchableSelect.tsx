@@ -14,6 +14,8 @@ export interface SearchableSelectProps {
   multiple?: boolean;
   placeholder?: string;
   className?: string;
+  containerClassName?: string;
+  inputClassName?: string;
   apiUrl?: string;
   apiHeaders?: Record<string, string>;
   apiSearchParam?: string;
@@ -31,6 +33,8 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
   multiple = false,
   placeholder = 'Search...',
   className = '',
+  containerClassName = '',
+  inputClassName = '',
   apiUrl,
   apiHeaders = {},
   apiSearchParam = 'search',
@@ -218,7 +222,7 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
   };
 
   return (
-    <div className={`jv-searchable-select ${className}`} ref={containerRef}>
+    <div className={`jv-searchable-select ${className} ${containerClassName}`} ref={containerRef}>
       <div
         className={`jv-select-input ${isOpen ? 'jv-select-input-open' : ''}`}
         onClick={() => setIsOpen(!isOpen)}
@@ -232,7 +236,7 @@ export const SearchableSelect: React.FC<SearchableSelectProps> = ({
           <div className="jv-select-search-container">
             <input
               type="text"
-              className="jv-select-search"
+              className={`jv-select-search ${inputClassName}`}
               placeholder={
                 apiUrl && searchTerm.length < minSearchLength
                   ? `Type at least ${minSearchLength} characters to search...`

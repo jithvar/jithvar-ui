@@ -10,6 +10,9 @@ export interface DateRangePickerProps {
   value?: DateRange;
   onChange?: (range: DateRange) => void;
   className?: string;
+  containerClassName?: string;
+  inputClassName?: string;
+  dateFormat?: 'MM/DD/YYYY' | 'DD/MM/YYYY' | 'YYYY-MM-DD' | 'MMM DD, YYYY' | 'DD MMM YYYY' | ((date: Date) => string);
 }
 
 type PresetKey = 'yesterday' | 'last7days' | 'last15days' | 'last30days' | 'currentMonth' | 'lastMonth' | 'last3Months' | 'custom';
@@ -23,6 +26,9 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
   value,
   onChange,
   className = '',
+  containerClassName = '',
+  inputClassName = '',
+  dateFormat = 'MMM DD, YYYY',
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [tempDateRange, setTempDateRange] = useState<DateRange>(
@@ -267,7 +273,32 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
 
   const formatDate = (date: Date | null): string => {
     if (!date) return '';
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    
+    // If custom formatter function is provided
+    if (typeof dateFormat === 'function') {
+      return dateFormat(date);
+    }
+    
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const monthName = monthNames[date.getMonth()];
+    
+    switch (dateFormat) {
+      case 'MM/DD/YYYY':
+        return `${month.toString().padStart(2, '0')}/${day.toString().padStart(2, '0')}/${year}`;
+      case 'DD/MM/YYYY':
+        return `${day.toString().padStart(2, '0')}/${month.toString().padStart(2, '0')}/${year}`;
+      case 'YYYY-MM-DD':
+        return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+      case 'MMM DD, YYYY':
+        return `${monthName} ${day}, ${year}`;
+      case 'DD MMM YYYY':
+        return `${day} ${monthName} ${year}`;
+      default:
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    }
   };
 
   const renderCalendar = (currentMonth: Date, setCurrentMonth: (date: Date) => void) => {
@@ -336,7 +367,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
   };
 
   return (
-    <div className={`jv-daterangepicker ${className}`} ref={containerRef}>
+    <div className={`jv-daterangepicker ${className} ${containerClassName}`} ref={containerRef}>
       <div className="jv-daterangepicker-input" onClick={() => setIsOpen(!isOpen)}>
         <input
           type="text"
@@ -346,7 +377,7 @@ export const DateRangePicker: React.FC<DateRangePickerProps> = ({
               ? `${formatDate(dateRange.startDate)} - ${formatDate(dateRange.endDate)}`
               : 'Select date range'
           }
-          className="jv-daterangepicker-input-field"
+          className={`jv-daterangepicker-input-field ${inputClassName}`}
           placeholder="Select date range"
         />
         <span className="jv-daterangepicker-icon">📅</span>
