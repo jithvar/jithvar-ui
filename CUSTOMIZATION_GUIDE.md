@@ -33,6 +33,7 @@ Every component in Jithvar UI supports the following customization props:
 ```
 
 **Available Date Formats:**
+
 - `MM/DD/YYYY` - 12/25/2024
 - `DD/MM/YYYY` - 25/12/2024
 - `YYYY-MM-DD` - 2024-12-25
@@ -187,7 +188,7 @@ JAlerts.success({
   title: "Success!",
   message: "Operation completed",
   customClass: "my-custom-alert",
-  confirmButtonClass: "custom-button"
+  confirmButtonClass: "custom-button",
 });
 ```
 
@@ -206,6 +207,7 @@ All chart components support:
 ```
 
 **Applies to all chart components:**
+
 - BarChart, PieChart, LineChart, AreaChart, DonutChart
 - GaugeChart, ScatterPlot, BubbleChart, RadarChart
 - FunnelChart, HeatmapChart, StackedBarChart, WaterfallChart
@@ -285,13 +287,13 @@ Jithvar UI is fully tree-shakeable. Import only what you need:
 
 ```tsx
 // Import only specific components
-import { DatePicker } from 'jithvar-ui';
-import { JTable } from 'jithvar-ui';
-import { BarChart } from 'jithvar-ui';
+import { DatePicker } from "jithvar-ui";
+import { JTable } from "jithvar-ui";
+import { BarChart } from "jithvar-ui";
 
 // Or use deep imports for even smaller bundles
-import { DatePicker } from 'jithvar-ui/dist/components/inputs/DatePicker';
-import { JTable } from 'jithvar-ui/dist/components/data/JTable';
+import { DatePicker } from "jithvar-ui/dist/components/inputs/DatePicker";
+import { JTable } from "jithvar-ui/dist/components/data/JTable";
 ```
 
 ## Tips for Customization

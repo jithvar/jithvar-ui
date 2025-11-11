@@ -134,33 +134,40 @@ pnpm add jithvar-ui
 
 ### Requirements
 
-- **React**: 17.0.0 - 18.x (React 19 not yet supported)
-- **React DOM**: 17.0.0 - 18.x
+- **React**: 17.0.0+ (including React 18 and React 19)
+- **React DOM**: 17.0.0+
 - **Next.js** (optional): 13.x - 15.x
+- **Node.js**: 14.0.0+
 
 ```bash
+# React 18 (Recommended)
 npm install react@18 react-dom@18
+
+# React 19 (Latest)
+npm install react@19 react-dom@19
 ```
 
 ### 🌳 Tree-Shaking: Import Only What You Need
 
-Jithvar UI is fully tree-shakeable! Import only the components you use to keep your bundle size minimal:
+Jithvar UI is **fully tree-shakeable**! Modern bundlers automatically remove unused components. Your bundle will only include what you import.
 
 ```tsx
-// ✅ Import only what you need - tree-shaking works automatically
-import { DatePicker, BarChart, JTable } from 'jithvar-ui';
+// ✅ Import only what you need - automatic tree-shaking
+import { DatePicker } from "jithvar-ui"; // ~15 KB
+import { JTable } from "jithvar-ui"; // ~45 KB
+import { BarChart, LineChart } from "jithvar-ui"; // ~16 KB
 
-// ✅ Or use deep imports for smallest bundle
-import { DatePicker } from 'jithvar-ui/dist/components/inputs/DatePicker';
-import { BarChart } from 'jithvar-ui/dist/components/charts/BarChart';
-
-// ❌ Don't import everything
-import * as JithvarUI from 'jithvar-ui'; // This imports the entire library!
+// ❌ Avoid wildcard imports (bundles everything)
+import * as JithvarUI from "jithvar-ui"; // ~350 KB
 ```
 
-**Bundle Size**: Only ~15-30 KB per component (gzipped)! Use 1 component or 10 - you only pay for what you use.
+**Bundle Size Comparison:**
 
-📖 See [INSTALLATION.md](./INSTALLATION.md) for detailed tree-shaking guide.
+- Single component: 8-15 KB (gzipped)
+- Data Table: ~45 KB (gzipped)
+- All 34 components: ~350 KB (gzipped)
+
+📖 [Read the full Tree-Shaking Guide](./TREE_SHAKING_GUIDE.md)
 
 ## 📖 Quick Start
 

@@ -3,16 +3,19 @@
 ## Installation
 
 ### NPM
+
 ```bash
 npm install jithvar-ui
 ```
 
 ### Yarn
+
 ```bash
 yarn add jithvar-ui
 ```
 
 ### PNPM
+
 ```bash
 pnpm add jithvar-ui
 ```
@@ -32,7 +35,7 @@ Jithvar UI is fully tree-shakeable, meaning you only bundle the components you a
 
 ```tsx
 // Import only specific components - tree-shaking works automatically
-import { DatePicker, BarChart, JTable } from 'jithvar-ui';
+import { DatePicker, BarChart, JTable } from "jithvar-ui";
 
 function MyApp() {
   return (
@@ -53,35 +56,36 @@ For the absolute smallest bundle size, use deep imports:
 
 ```tsx
 // Import directly from component paths
-import { DatePicker } from 'jithvar-ui/dist/components/inputs/DatePicker';
-import { BarChart } from 'jithvar-ui/dist/components/charts/BarChart';
-import { JTable } from 'jithvar-ui/dist/components/data/JTable';
+import { DatePicker } from "jithvar-ui/dist/components/inputs/DatePicker";
+import { BarChart } from "jithvar-ui/dist/components/charts/BarChart";
+import { JTable } from "jithvar-ui/dist/components/data/JTable";
 ```
 
 ### Method 3: Category Imports
 
 ```tsx
 // Import all charts (if you need multiple charts)
-import { BarChart, PieChart, LineChart } from 'jithvar-ui';
+import { BarChart, PieChart, LineChart } from "jithvar-ui";
 
 // Import all inputs
-import { DatePicker, SearchableSelect, RangeSlider } from 'jithvar-ui';
+import { DatePicker, SearchableSelect, RangeSlider } from "jithvar-ui";
 ```
 
 ## Bundle Size Comparison
 
-| Import Method | Components | Approximate Size |
-|--------------|------------|------------------|
-| Single Component | 1 component | ~15-30 KB |
-| 5 Components | 5 components | ~75-150 KB |
-| 10 Components | 10 components | ~150-300 KB |
-| All Components | 34 components | ~900 KB - 1.2 MB |
+| Import Method    | Components    | Approximate Size |
+| ---------------- | ------------- | ---------------- |
+| Single Component | 1 component   | ~15-30 KB        |
+| 5 Components     | 5 components  | ~75-150 KB       |
+| 10 Components    | 10 components | ~150-300 KB      |
+| All Components   | 34 components | ~900 KB - 1.2 MB |
 
-*Sizes are gzipped and minified. Actual sizes may vary based on build configuration.*
+_Sizes are gzipped and minified. Actual sizes may vary based on build configuration._
 
 ## Component Categories & Paths
 
 ### Charts (20 components)
+
 ```tsx
 import {
   BarChart,
@@ -103,13 +107,14 @@ import {
   BoxPlotChart,
   BulletChart,
   GanttChart,
-  HeartbeatChart
-} from 'jithvar-ui';
+  HeartbeatChart,
+} from "jithvar-ui";
 ```
 
 **Deep Import Path**: `jithvar-ui/dist/components/charts/[ComponentName]`
 
 ### Input Components (10 components)
+
 ```tsx
 import {
   DatePicker,
@@ -121,32 +126,32 @@ import {
   Radio,
   RadioGroup,
   ToggleButtons,
-  MaskInput
-} from 'jithvar-ui';
+  MaskInput,
+} from "jithvar-ui";
 ```
 
 **Deep Import Path**: `jithvar-ui/dist/components/inputs/[ComponentName]`
 
 ### Layout Components (2 components)
+
 ```tsx
-import {
-  Tabs,
-  Collapse
-} from 'jithvar-ui';
+import { Tabs, Collapse } from "jithvar-ui";
 ```
 
 **Deep Import Path**: `jithvar-ui/dist/components/layout/[ComponentName]`
 
 ### Data Components (1 component)
+
 ```tsx
-import { JTable } from 'jithvar-ui';
+import { JTable } from "jithvar-ui";
 ```
 
 **Deep Import Path**: `jithvar-ui/dist/components/data/JTable`
 
 ### Feedback Components (1 component)
+
 ```tsx
-import { JAlerts } from 'jithvar-ui';
+import { JAlerts } from "jithvar-ui";
 ```
 
 **Deep Import Path**: `jithvar-ui/dist/components/feedback/JAlerts`
@@ -156,12 +161,12 @@ import { JAlerts } from 'jithvar-ui';
 ### Example 1: Minimal Bundle (Only DatePicker)
 
 ```tsx
-import { DatePicker } from 'jithvar-ui';
-import { useState } from 'react';
+import { DatePicker } from "jithvar-ui";
+import { useState } from "react";
 
 function BookingForm() {
   const [date, setDate] = useState<Date | null>(null);
-  
+
   return (
     <DatePicker
       value={date}
@@ -178,7 +183,7 @@ function BookingForm() {
 ### Example 2: Data Dashboard (Charts + Table)
 
 ```tsx
-import { BarChart, PieChart, LineChart, JTable } from 'jithvar-ui';
+import { BarChart, PieChart, LineChart, JTable } from "jithvar-ui";
 
 function Dashboard() {
   return (
@@ -202,8 +207,8 @@ import {
   SearchableSelect,
   RangeSlider,
   CheckboxList,
-  MaskInput
-} from 'jithvar-ui';
+  MaskInput,
+} from "jithvar-ui";
 
 function RegistrationForm() {
   return (
@@ -226,14 +231,14 @@ function RegistrationForm() {
 
 ```tsx
 // app/page.tsx
-'use client';
+"use client";
 
-import { DatePicker, BarChart } from 'jithvar-ui';
-import { useState } from 'react';
+import { DatePicker, BarChart } from "jithvar-ui";
+import { useState } from "react";
 
 export default function Page() {
   const [date, setDate] = useState<Date | null>(null);
-  
+
   return (
     <div>
       <DatePicker value={date} onChange={setDate} />
@@ -247,12 +252,12 @@ export default function Page() {
 
 ```tsx
 // pages/index.tsx
-import { DatePicker, BarChart } from 'jithvar-ui';
-import { useState } from 'react';
+import { DatePicker, BarChart } from "jithvar-ui";
+import { useState } from "react";
 
 export default function HomePage() {
   const [date, setDate] = useState<Date | null>(null);
-  
+
   return (
     <div>
       <DatePicker value={date} onChange={setDate} />
@@ -268,9 +273,9 @@ export default function HomePage() {
 
 ```tsx
 // app/components/Chart.tsx
-'use client';
+"use client";
 
-import { BarChart } from 'jithvar-ui';
+import { BarChart } from "jithvar-ui";
 
 export function SalesChart({ data }) {
   return <BarChart data={data} title="Sales" />;
@@ -279,11 +284,11 @@ export function SalesChart({ data }) {
 
 ```tsx
 // app/page.tsx (Server Component)
-import { SalesChart } from './components/Chart';
+import { SalesChart } from "./components/Chart";
 
 export default async function Page() {
   const data = await fetchSalesData();
-  
+
   return (
     <div>
       <h1>Dashboard</h1>
@@ -298,22 +303,20 @@ export default async function Page() {
 All components are fully typed with TypeScript. Import types as needed:
 
 ```tsx
-import { 
+import {
   DatePicker,
   DatePickerProps,
   BarChart,
   BarChartDataPoint,
   JTable,
-  JTableColumn
-} from 'jithvar-ui';
+  JTableColumn,
+} from "jithvar-ui";
 
 const columns: JTableColumn[] = [
-  { key: 'name', label: 'Name', sortable: true }
+  { key: "name", label: "Name", sortable: true },
 ];
 
-const chartData: BarChartDataPoint[] = [
-  { label: 'Jan', value: 100 }
-];
+const chartData: BarChartDataPoint[] = [{ label: "Jan", value: 100 }];
 ```
 
 ## Build Optimization
@@ -324,8 +327,8 @@ Vite automatically tree-shakes by default. No additional configuration needed.
 
 ```typescript
 // vite.config.ts
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
@@ -333,7 +336,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          'jithvar-charts': ['jithvar-ui'], // Optional: separate vendor chunk
+          "jithvar-charts": ["jithvar-ui"], // Optional: separate vendor chunk
         },
       },
     },
@@ -361,7 +364,7 @@ Next.js automatically tree-shakes. For additional optimization:
 // next.config.js
 module.exports = {
   experimental: {
-    optimizePackageImports: ['jithvar-ui'],
+    optimizePackageImports: ["jithvar-ui"],
   },
 };
 ```
@@ -381,13 +384,13 @@ Override default styles using CSS custom properties:
 :root {
   --jv-primary-color: #your-color;
   --jv-border-radius: 8px;
-  --jv-font-family: 'Your Font', sans-serif;
+  --jv-font-family: "Your Font", sans-serif;
 }
 ```
 
 ```tsx
 // app/layout.tsx or pages/_app.tsx
-import './styles/jithvar-custom.css';
+import "./styles/jithvar-custom.css";
 ```
 
 ## Troubleshooting
@@ -398,10 +401,10 @@ import './styles/jithvar-custom.css';
 
 ```tsx
 // ❌ Bad - imports everything
-import * as JithvarUI from 'jithvar-ui';
+import * as JithvarUI from "jithvar-ui";
 
 // ✅ Good - only imports what you use
-import { DatePicker, BarChart } from 'jithvar-ui';
+import { DatePicker, BarChart } from "jithvar-ui";
 ```
 
 ### Issue: React Version Conflicts
@@ -435,9 +438,11 @@ npm install --save-dev @types/react @types/react-dom
 
 ```tsx
 // Lazy load charts
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense } from "react";
 
-const BarChart = lazy(() => import('jithvar-ui').then(m => ({ default: m.BarChart })));
+const BarChart = lazy(() =>
+  import("jithvar-ui").then((m) => ({ default: m.BarChart }))
+);
 
 function Dashboard() {
   return (
