@@ -11,7 +11,7 @@
 
 **A modern, enterprise-grade React component library with 34 production-ready components including 20 interactive data visualization charts, advanced form inputs, and data management tools.**
 
-[📚 Documentation](https://jithvar-ui.vercel.app) • [🎨 Live Demo](https://jithvar-ui.vercel.app) • [💼 Jithvar Consultancy](https://jithvar.com) • [🐛 Report Bug](https://github.com/jithvar/jithvar-ui/issues) • [✨ Request Feature](https://github.com/jithvar/jithvar-ui/issues)
+[📚 Documentation](https://ui.jithvar.com) • [🎨 Live Demo](https://ui.jithvar.com) • [💼 Jithvar Consultancy](https://jithvar.com) • [🐛 Report Bug](https://github.com/jithvar/jithvar-ui/issues) • [✨ Request Feature](https://github.com/jithvar/jithvar-ui/issues)
 
 Built with ❤️ by [**Jithvar Consultancy Services**](https://jithvar.com) - Your trusted partner for enterprise software development, UI/UX design, and digital transformation solutions.
 
