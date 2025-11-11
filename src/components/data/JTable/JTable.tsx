@@ -21,6 +21,13 @@ export const JTable: React.FC<JTableProps> = ({
   columns,
   apiUrl,
   apiHeaders = {},
+  data: clientData,
+  totalRecords: clientTotal,
+  loading: externalLoading,
+  onFetchData,
+  dataPath = 'data',
+  totalPath = 'total',
+  enableUrlState,
   enableUniversalSearch = true,
   universalSearchPlaceholder = 'Search across all columns...',
   enableColumnSearch = true,
@@ -43,6 +50,8 @@ export const JTable: React.FC<JTableProps> = ({
   tableClassName = '',
   headerClassName = '',
   rowClassName,
+  rowStyle,
+  cellClassName,
   emptyMessage = 'No data available',
   loadingMessage = 'Loading...',
   onRowClick,
@@ -53,14 +62,35 @@ export const JTable: React.FC<JTableProps> = ({
   bordered = false,
   compact = false,
 }) => {
+  // Determine if we should use URL state (default: true for API mode, false for client mode)
+  const shouldUseUrlState = enableUrlState !== undefined ? enableUrlState : (apiUrl !== undefined || onFetchData !== undefined);
+  const isClientMode = clientData !== undefined;
   const [state, setState] = useState<TableState>(() => {
-    const params = new URLSearchParams(window.location.search);
-    const visibleCols = params.get('visibleColumns')?.split(',') || columns.filter(c => c.visible !== false).map(c => c.key);
+    const defaultVisibleColumns = columns.filter(c => c.visible !== false).map(c => c.key);
     
+    if (!shouldUseUrlState) {
+      // Don't read from URL in client mode or when URL state is disabled
+      return {
+        page: 1,
+        pageSize: defaultPageSize,
+        sortColumn: null,
+        sortDirection: 'asc',
+        universalSearch: '',
+        columnFilters: {},
+        selectedRows: [],
+        visibleColumns: defaultVisibleColumns,
+        activeFilterColumn: null,
+      };
+    }
+    
+    const params = new URLSearchParams(window.location.search);
+    const visibleCols = params.get('visibleColumns')?.split(',') || defaultVisibleColumns;
+    
+    // Only read from URL if values exist (don't use defaults)
     return {
-      page: parseInt(params.get('page') || '1'),
-      pageSize: parseInt(params.get('pageSize') || String(defaultPageSize)),
-      sortColumn: params.get('sortColumn'),
+      page: params.has('page') ? parseInt(params.get('page')!) : 1,
+      pageSize: params.has('pageSize') ? parseInt(params.get('pageSize')!) : defaultPageSize,
+      sortColumn: params.get('sortColumn') || null,
       sortDirection: (params.get('sortDirection') as 'asc' | 'desc') || 'asc',
       universalSearch: params.get('search') || '',
       columnFilters: {},
@@ -70,8 +100,8 @@ export const JTable: React.FC<JTableProps> = ({
     };
   });
 
-  const [data, setData] = useState<any[]>([]);
-  const [totalRecords, setTotalRecords] = useState(0);
+  const [data, setData] = useState<any[]>(clientData || []);
+  const [totalRecords, setTotalRecords] = useState(clientTotal || 0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [columnStats, setColumnStats] = useState<Record<string, { min: number; max: number }>>({});
@@ -81,12 +111,21 @@ export const JTable: React.FC<JTableProps> = ({
   const floatingMenuRef = useRef<HTMLDivElement | null>(null);
   const hideFloatingMenuTimeoutRef = useRef<number | null>(null);
 
-  // Update URL when state changes
+  // Update URL when state changes (only add non-default values)
   const updateURL = useCallback((newState: TableState) => {
+    if (!shouldUseUrlState) return;
+    
     const params = new URLSearchParams();
     
-    params.set('page', String(newState.page));
-    params.set('pageSize', String(newState.pageSize));
+    // Only add page if not default (1)
+    if (newState.page !== 1) {
+      params.set('page', String(newState.page));
+    }
+    
+    // Only add pageSize if not default
+    if (newState.pageSize !== defaultPageSize) {
+      params.set('pageSize', String(newState.pageSize));
+    }
     
     if (newState.sortColumn) {
       params.set('sortColumn', newState.sortColumn);
@@ -116,65 +155,103 @@ export const JTable: React.FC<JTableProps> = ({
       }
     });
     
-    const newUrl = `${window.location.pathname}?${params.toString()}`;
+    const newUrl = params.toString() 
+      ? `${window.location.pathname}?${params.toString()}`
+      : window.location.pathname;
     window.history.pushState({}, '', newUrl);
-  }, [columns]);
+  }, [columns, shouldUseUrlState, defaultPageSize]);
 
-  // Fetch data from API
+  // Fetch data from API or custom fetcher
   const fetchData = useCallback(async () => {
-    setLoading(true);
+    // Don't fetch if using client-side data
+    if (isClientMode) {
+      setData(clientData || []);
+      setTotalRecords(clientTotal || 0);
+      return;
+    }
+    
+    // Use external loading state if provided
+    if (externalLoading !== undefined) {
+      setLoading(externalLoading);
+    } else {
+      setLoading(true);
+    }
     setError(null);
 
     try {
-      const params = new URLSearchParams();
-      params.set('page', String(state.page));
-      params.set('pageSize', String(state.pageSize));
-      params.set('searchMode', searchMode);
+      let result: { data: any[]; total: number };
       
-      if (state.sortColumn) {
-        params.set('sortColumn', state.sortColumn);
-        params.set('sortDirection', state.sortDirection);
-      }
-      
-      if (state.universalSearch) {
-        params.set('search', state.universalSearch);
-      }
-      
-      // Add column filters
-      Object.entries(state.columnFilters).forEach(([key, filterState]) => {
-        if (filterState.text) {
-          params.set(key, filterState.text);
+      // Use custom onFetchData if provided
+      if (onFetchData) {
+        const params = {
+          page: state.page,
+          pageSize: state.pageSize,
+          sortColumn: state.sortColumn,
+          sortDirection: state.sortDirection,
+          universalSearch: state.universalSearch,
+          columnFilters: state.columnFilters,
+          searchMode,
+        };
+        result = await onFetchData(params);
+        setData(result.data || []);
+        setTotalRecords(result.total || 0);
+      } 
+      // Use apiUrl if provided
+      else if (apiUrl) {
+        const params = new URLSearchParams();
+        params.set('page', String(state.page));
+        params.set('pageSize', String(state.pageSize));
+        params.set('searchMode', searchMode);
+        
+        if (state.sortColumn) {
+          params.set('sortColumn', state.sortColumn);
+          params.set('sortDirection', state.sortDirection);
         }
-        if (filterState.dateRange?.startDate && filterState.dateRange?.endDate) {
-          params.set(`${key}_start`, filterState.dateRange.startDate.toISOString());
-          params.set(`${key}_end`, filterState.dateRange.endDate.toISOString());
+        
+        if (state.universalSearch) {
+          params.set('search', state.universalSearch);
         }
-        if (filterState.numberRange) {
-          params.set(`${key}_min`, String(filterState.numberRange[0]));
-          params.set(`${key}_max`, String(filterState.numberRange[1]));
+        
+        // Add column filters
+        Object.entries(state.columnFilters).forEach(([key, filterState]) => {
+          if (filterState.text) {
+            params.set(key, filterState.text);
+          }
+          if (filterState.dateRange?.startDate && filterState.dateRange?.endDate) {
+            params.set(`${key}_start`, filterState.dateRange.startDate.toISOString());
+            params.set(`${key}_end`, filterState.dateRange.endDate.toISOString());
+          }
+          if (filterState.numberRange) {
+            params.set(`${key}_min`, String(filterState.numberRange[0]));
+            params.set(`${key}_max`, String(filterState.numberRange[1]));
+          }
+        });
+
+        const url = `${apiUrl}${apiUrl.includes('?') ? '&' : '?'}${params.toString()}`;
+        const response = await fetch(url, { headers: apiHeaders });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-      });
 
-      const url = `${apiUrl}?${params.toString()}`;
-      const response = await fetch(url, { headers: apiHeaders });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const apiResult = await response.json();
+        
+        // Extract data using custom path or fallback to common patterns
+        const extractedData = apiResult[dataPath] || apiResult.data || apiResult.results || apiResult.masters || apiResult;
+        const extractedTotal = apiResult[totalPath] || apiResult.total || apiResult.totalRecords || apiResult.totalMasters || (Array.isArray(extractedData) ? extractedData.length : 0);
+        
+        setData(Array.isArray(extractedData) ? extractedData : []);
+        setTotalRecords(extractedTotal);
       }
-
-      const result = await response.json();
-      
-      setData(result.data || result.results || result);
-      setTotalRecords(result.total || result.totalRecords || (result.data || result.results || result).length);
       
       // Calculate min/max for number columns
-      if (result.data || result.results || result) {
-        const dataArray = result.data || result.results || result;
+      const currentData = isClientMode ? clientData : data;
+      if (Array.isArray(currentData) && currentData.length > 0) {
         const stats: Record<string, { min: number; max: number }> = {};
         
         columns.forEach(col => {
           if (col.type === 'number') {
-            const values = dataArray.map((row: any) => row[col.key]).filter((v: any) => typeof v === 'number');
+            const values = currentData.map((row: any) => row[col.key]).filter((v: any) => typeof v === 'number');
             if (values.length > 0) {
               stats[col.key] = {
                 min: Math.min(...values),
@@ -191,15 +268,27 @@ export const JTable: React.FC<JTableProps> = ({
       setData([]);
       setTotalRecords(0);
     } finally {
-      setLoading(false);
+      if (externalLoading === undefined) {
+        setLoading(false);
+      }
     }
-  }, [state.page, state.pageSize, state.sortColumn, state.sortDirection, state.universalSearch, state.columnFilters, apiUrl, apiHeaders, searchMode, columns]);
+  }, [state.page, state.pageSize, state.sortColumn, state.sortDirection, state.universalSearch, state.columnFilters, apiUrl, apiHeaders, searchMode, columns, dataPath, totalPath, onFetchData, isClientMode, clientData, clientTotal, externalLoading]);
+
+  // Sync client data when it changes
+  useEffect(() => {
+    if (isClientMode) {
+      setData(clientData || []);
+      setTotalRecords(clientTotal || 0);
+    }
+  }, [clientData, clientTotal, isClientMode]);
 
   // Update URL and fetch data when state changes
   useEffect(() => {
     updateURL(state);
-    fetchData();
-  }, [state.page, state.pageSize, state.sortColumn, state.sortDirection, state.universalSearch, state.columnFilters]);
+    if (!isClientMode) {
+      fetchData();
+    }
+  }, [state.page, state.pageSize, state.sortColumn, state.sortDirection, state.universalSearch, state.columnFilters, isClientMode]);
 
   // Close filter dropdown when clicking outside
   useEffect(() => {
@@ -745,6 +834,45 @@ export const JTable: React.FC<JTableProps> = ({
     return classes.join(' ');
   };
 
+  const getRowStyle = (row: any, index: number): React.CSSProperties | undefined => {
+    if (typeof rowStyle === 'function') {
+      return rowStyle(row, index);
+    }
+    return rowStyle;
+  };
+
+  const getCellClassName = (column: JTableColumn, value: any, row: any, index: number): string => {
+    const classes: string[] = ['jv-jtable-td'];
+    
+    // Column-specific className
+    if (typeof column.className === 'function') {
+      classes.push(column.className(value, row, index));
+    } else if (column.className) {
+      classes.push(column.className);
+    }
+    
+    // Global cellClassName
+    if (typeof cellClassName === 'function') {
+      classes.push(cellClassName(value, row, column, index));
+    } else if (cellClassName) {
+      classes.push(cellClassName);
+    }
+    
+    return classes.filter(Boolean).join(' ');
+  };
+
+  const getCellStyle = (column: JTableColumn, value: any, row: any, index: number): React.CSSProperties => {
+    const baseStyle: React.CSSProperties = { textAlign: column.align };
+    
+    if (typeof column.cellStyle === 'function') {
+      return { ...baseStyle, ...column.cellStyle(value, row, index) };
+    } else if (column.cellStyle) {
+      return { ...baseStyle, ...column.cellStyle };
+    }
+    
+    return baseStyle;
+  };
+
   return (
     <div className={classNames('jv-jtable', className)}>
       {/* Header Controls */}
@@ -871,7 +999,13 @@ export const JTable: React.FC<JTableProps> = ({
               {visibleColumnsData.map((column) => (
                 <th
                   key={column.key}
-                  style={{ width: column.width, textAlign: column.align }}
+                  style={{
+                    width: column.width,
+                    minWidth: column.minWidth,
+                    maxWidth: column.maxWidth,
+                    textAlign: column.align,
+                    ...column.headerStyle
+                  }}
                   className={classNames('jv-jtable-th', column.headerClassName)}
                 >
                   <div className="jv-jtable-th-content">
@@ -959,6 +1093,7 @@ export const JTable: React.FC<JTableProps> = ({
                   <tr
                     key={currentRowId}
                     className={getRowClassName(row, rowIndex)}
+                    style={getRowStyle(row, rowIndex)}
                     onClick={() => onRowClick?.(row, rowIndex)}
                     onDoubleClick={() => onRowDoubleClick?.(row, rowIndex)}
                   >
@@ -985,17 +1120,20 @@ export const JTable: React.FC<JTableProps> = ({
                     )}
 
                     {/* Data Columns */}
-                    {visibleColumnsData.map((column) => (
-                      <td
-                        key={column.key}
-                        style={{ textAlign: column.align }}
-                        className={classNames('jv-jtable-td', column.className)}
-                        onMouseEnter={(e) => handleCellMouseEnter(e, currentRowId, column.key)}
-                        onMouseLeave={(e) => handleCellMouseLeave(e)}
-                      >
-                        {column.render ? column.render(row[column.key], row, rowIndex) : row[column.key]}
-                      </td>
-                    ))}
+                    {visibleColumnsData.map((column) => {
+                      const cellValue = row[column.key];
+                      return (
+                        <td
+                          key={column.key}
+                          style={getCellStyle(column, cellValue, row, rowIndex)}
+                          className={getCellClassName(column, cellValue, row, rowIndex)}
+                          onMouseEnter={(e) => handleCellMouseEnter(e, currentRowId, column.key)}
+                          onMouseLeave={(e) => handleCellMouseLeave(e)}
+                        >
+                          {column.render ? column.render(cellValue, row, rowIndex) : cellValue}
+                        </td>
+                      );
+                    })}
 
                     {/* Action Column (Right) */}
                     {hasActions && actionColumnPosition === 'right' && (

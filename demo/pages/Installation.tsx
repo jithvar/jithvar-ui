@@ -24,7 +24,7 @@ export const Installation: React.FC = () => {
               <div style={{ marginTop: '8px', fontSize: '14px', color: '#065f46' }}>
                 ✓ React 17.0.0+<br />
                 ✓ React 18.0.0+<br />
-                <span style={{ color: '#dc2626' }}>✗ React 19 (not yet supported)</span>
+                ✓ React 19.0.0+ <span style={{ background: '#86efac', padding: '2px 6px', borderRadius: '4px', fontSize: '12px' }}>NEW</span>
               </div>
             </div>
             <div>
@@ -50,7 +50,7 @@ export const Installation: React.FC = () => {
       {/* Package Installation */}
       <section className="jv-section">
         <h2>1️⃣ Install Package</h2>
-        <p>Install Jithvar UI using your preferred package manager:</p>
+        <p>Install the complete Jithvar UI library with all components:</p>
         
         <h3>📦 npm</h3>
         <CodeBlock language="bash" code="npm install jithvar-ui" />
@@ -62,6 +62,20 @@ export const Installation: React.FC = () => {
         <CodeBlock language="bash" code="pnpm add jithvar-ui" />
 
         <div style={{ 
+          background: '#dbeafe', 
+          padding: '16px', 
+          borderRadius: '8px',
+          border: '2px solid #60a5fa',
+          marginTop: '16px'
+        }}>
+          <strong>💡 Pro Tip:</strong>
+          <p style={{ margin: '8px 0 0 0' }}>
+            The library is fully tree-shakeable. Import only what you need, and modern bundlers (Webpack, Vite, Rollup) 
+            will automatically exclude unused components from your final bundle. No manual configuration required!
+          </p>
+        </div>
+
+        <div style={{ 
           background: '#fef3c7', 
           padding: '16px', 
           borderRadius: '8px',
@@ -70,7 +84,7 @@ export const Installation: React.FC = () => {
         }}>
           <strong>⚠️ Peer Dependencies:</strong>
           <p style={{ margin: '8px 0 0 0' }}>
-            Jithvar UI requires React 17+ or React 18+. Make sure you have React installed:
+            Jithvar UI requires React 17+, 18+, or 19+. Make sure you have React installed:
           </p>
           <CodeBlock 
             language="bash" 
@@ -86,18 +100,45 @@ export const Installation: React.FC = () => {
 
         <h3>✅ Import Only What You Need (Recommended)</h3>
         <CodeBlock
-          code={`// ✅ Tree-shakeable: Only imports JTable
+          code={`// ✅ Tree-shakeable: Only imports JTable and its dependencies
 import { JTable } from 'jithvar-ui';
 
 // ✅ Tree-shakeable: Only imports DatePicker and SearchableSelect
 import { DatePicker, SearchableSelect } from 'jithvar-ui';
 
 // ✅ Tree-shakeable: Import specific charts
-import { BarChart, LineChart, PieChart } from 'jithvar-ui';`}
+import { BarChart, LineChart, PieChart } from 'jithvar-ui';
+
+// ✅ Tree-shakeable: Import alerts
+import { JAlerts } from 'jithvar-ui';`}
           language="tsx"
         />
 
-        <h3>📊 Bundle Size Optimization</h3>
+        <div style={{ 
+          background: '#dcfce7', 
+          padding: '16px', 
+          borderRadius: '8px',
+          border: '2px solid #86efac',
+          marginTop: '16px'
+        }}>
+          <strong>✨ How Tree-Shaking Works:</strong>
+          <p style={{ margin: '8px 0 0 0' }}>
+            When you build your project, bundlers like Webpack, Vite, or Rollup automatically analyze your imports 
+            and only include the components you actually use. For example:
+          </p>
+          <ul style={{ marginLeft: '20px', marginTop: '8px' }}>
+            <li>Import <code>JAlerts</code> only → Bundle: ~25 KB</li>
+            <li>Import <code>DatePicker</code> only → Bundle: ~30 KB</li>
+            <li>Import <code>BarChart</code> only → Bundle: ~10 KB</li>
+            <li>Import <code>JTable</code> → Bundle: ~50 KB (includes dependencies)</li>
+            <li>Import all 34 components → Bundle: ~350 KB (full library)</li>
+          </ul>
+          <p style={{ marginTop: '12px', fontSize: '14px', color: '#065f46' }}>
+            <strong>📦 No configuration needed!</strong> Tree-shaking works automatically with all modern bundlers.
+          </p>
+        </div>
+
+        <h3>📊 Component Size Reference</h3>
         <div style={{ 
           background: '#f0f9ff', 
           padding: '20px', 
@@ -109,32 +150,45 @@ import { BarChart, LineChart, PieChart } from 'jithvar-ui';`}
               <tr style={{ borderBottom: '2px solid #bae6fd' }}>
                 <th style={{ padding: '12px', textAlign: 'left' }}>Component Category</th>
                 <th style={{ padding: '12px', textAlign: 'left' }}>Approx. Size</th>
-                <th style={{ padding: '12px', textAlign: 'left' }}>Components</th>
+                <th style={{ padding: '12px', textAlign: 'left' }}>Example Components</th>
               </tr>
             </thead>
             <tbody>
               <tr style={{ borderBottom: '1px solid #e0f2fe' }}>
+                <td style={{ padding: '12px' }}>Alerts & Feedback</td>
+                <td style={{ padding: '12px' }}>~25 KB</td>
+                <td style={{ padding: '12px' }}>JAlerts (all methods)</td>
+              </tr>
+              <tr style={{ borderBottom: '1px solid #e0f2fe' }}>
                 <td style={{ padding: '12px' }}>Single Chart</td>
                 <td style={{ padding: '12px' }}>~8-12 KB</td>
-                <td style={{ padding: '12px' }}>BarChart, PieChart, etc.</td>
+                <td style={{ padding: '12px' }}>BarChart, PieChart, LineChart</td>
               </tr>
               <tr style={{ borderBottom: '1px solid #e0f2fe' }}>
                 <td style={{ padding: '12px' }}>Date Components</td>
-                <td style={{ padding: '12px' }}>~15 KB</td>
+                <td style={{ padding: '12px' }}>~15 KB each</td>
                 <td style={{ padding: '12px' }}>DatePicker, DateRangePicker</td>
               </tr>
               <tr style={{ borderBottom: '1px solid #e0f2fe' }}>
+                <td style={{ padding: '12px' }}>Form Inputs</td>
+                <td style={{ padding: '12px' }}>~5-15 KB</td>
+                <td style={{ padding: '12px' }}>SearchableSelect, RangeSlider</td>
+              </tr>
+              <tr style={{ borderBottom: '1px solid #e0f2fe' }}>
                 <td style={{ padding: '12px' }}>JTable</td>
-                <td style={{ padding: '12px' }}>~25 KB</td>
-                <td style={{ padding: '12px' }}>Full data table</td>
+                <td style={{ padding: '12px' }}>~50 KB</td>
+                <td style={{ padding: '12px' }}>Full data table with dependencies</td>
               </tr>
               <tr>
-                <td style={{ padding: '12px' }}>All Components</td>
-                <td style={{ padding: '12px' }}>~350 KB</td>
-                <td style={{ padding: '12px' }}>Complete library</td>
+                <td style={{ padding: '12px', fontWeight: 'bold' }}>All Components</td>
+                <td style={{ padding: '12px', fontWeight: 'bold' }}>~350 KB</td>
+                <td style={{ padding: '12px' }}>Complete library (34 components)</td>
               </tr>
             </tbody>
           </table>
+          <p style={{ marginTop: '12px', fontSize: '13px', color: '#64748b' }}>
+            * Sizes are gzipped and include all dependencies. Actual sizes may vary based on your bundler configuration.
+          </p>
         </div>
       </section>
 

@@ -578,6 +578,143 @@ const columns = [
   // Column filters
   enableColumnSearch={true}
 />`} />
+
+        <h3>🆕 Client-Side Data Mode</h3>
+        <div style={{ 
+          background: '#dcfce7', 
+          padding: '16px', 
+          borderRadius: '8px',
+          border: '2px solid #86efac',
+          marginBottom: '16px'
+        }}>
+          <strong>✨ New in v1.0.5:</strong> Use JTable with client-side data without API calls!
+        </div>
+        <CodeBlock code={`// Fetch and format data yourself, then pass to JTable
+const [data, setData] = useState([]);
+const [loading, setLoading] = useState(false);
+const [total, setTotal] = useState(0);
+
+// Custom data fetcher
+const fetchData = async (params) => {
+  setLoading(true);
+  try {
+    const response = await fetch(\`/api/users?\${new URLSearchParams(params)}\`);
+    const result = await response.json();
+    
+    // Format data however you want
+    const formattedData = result.users.map(user => ({
+      id: user._id,
+      fullName: \`\${user.firstName} \${user.lastName}\`,
+      // ... custom formatting
+    }));
+    
+    setData(formattedData);
+    setTotal(result.total);
+  } finally {
+    setLoading(false);
+  }
+};
+
+<JTable
+  columns={columns}
+  data={data}                    // Your formatted data
+  totalRecords={total}           // Total count for pagination
+  loading={loading}              // Your loading state
+  onFetchData={fetchData}        // Your custom fetcher
+  enableUrlState={false}         // Optional: disable URL params
+/>`} />
+
+        <h3>🆕 Advanced Column Customization</h3>
+        <CodeBlock code={`const columns = [
+  {
+    key: 'name',
+    label: 'Name',
+    
+    // Column width constraints
+    minWidth: '150px',
+    maxWidth: '300px',
+    
+    // Dynamic cell className
+    className: (value, row) => {
+      if (row.isVIP) return 'cell-vip';
+      if (row.isNew) return 'cell-new';
+      return '';
+    },
+    
+    // Dynamic cell styles
+    cellStyle: (value, row) => ({
+      fontWeight: row.isVIP ? 'bold' : 'normal',
+      color: row.status === 'active' ? '#16a34a' : '#6b7280',
+    }),
+    
+    // Header styles
+    headerStyle: {
+      backgroundColor: '#f0f9ff',
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
+  },
+];`} />
+
+        <h3>🆕 Advanced Row Customization</h3>
+        <CodeBlock code={`<JTable
+  columns={columns}
+  apiUrl="/api/users"
+  
+  // Dynamic row className
+  rowClassName={(row, index) => {
+    if (row.priority === 'high') return 'row-priority-high';
+    if (index % 2 === 0) return 'row-even';
+    return 'row-odd';
+  }}
+  
+  // Dynamic row styles
+  rowStyle={(row) => ({
+    backgroundColor: row.isHighlighted ? '#fef3c7' : 'transparent',
+    borderLeft: row.status === 'urgent' ? '4px solid #dc2626' : 'none',
+  })}
+  
+  // Global cell className function
+  cellClassName={(value, row, column, index) => {
+    if (column.key === 'status' && value === 'error') return 'cell-error';
+    if (column.key === 'amount' && value > 1000) return 'cell-high-value';
+    return '';
+  }}
+/>`} />
+
+        <h3>🆕 Custom API Response Paths</h3>
+        <CodeBlock code={`// API returns: { masters: [...], totalMasters: 150 }
+<JTable
+  columns={columns}
+  apiUrl="/api/masters"
+  dataPath="masters"           // Path to data array
+  totalPath="totalMasters"     // Path to total count
+/>
+
+// API returns: { results: [...], pagination: { total: 150 } }
+<JTable
+  columns={columns}
+  apiUrl="/api/data"
+  dataPath="results"
+  totalPath="pagination.total"  // Nested path support coming soon
+/>`} />
+
+        <h3>🆕 URL State Management</h3>
+        <CodeBlock code={`// Enable URL state (default for API mode)
+<JTable
+  columns={columns}
+  apiUrl="/api/users"
+  enableUrlState={true}  // Filters, sorting, pagination in URL
+/>
+
+// Disable URL state (default for client mode)
+<JTable
+  columns={columns}
+  data={clientData}
+  enableUrlState={false}  // No URL params
+/>
+
+// URL will contain filters: ?page=2&pageSize=25&search=john&sortColumn=name`} />
       </section>
 
       <section className="jv-section" id="date-picker-config">

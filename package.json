@@ -1,7 +1,7 @@
 {
   "name": "jithvar-ui",
-  "version": "1.0.3",
-  "description": "Professional React component library with 34 production-ready components including 20 interactive charts, advanced form inputs, data tables, and enterprise-grade UI tools. Built with TypeScript for Next.js and React applications.",
+  "version": "1.0.5",
+  "description": "Professional React component library with 34 production-ready components including 20 interactive charts, advanced form inputs, data tables, and enterprise-grade UI tools. Built with TypeScript for Next.js and React applications. Supports React 17, 18, and 19.",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
@@ -16,17 +16,23 @@
     },
     "./package.json": "./package.json"
   },
+  "bin": {
+    "jithvar-ui": "./bin/jithvar-ui.cjs"
+  },
   "files": [
     "dist",
+    "bin",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
     "build": "rollup -c",
+    "build:modular": "node scripts/build-modular.cjs",
     "dev": "rollup -c -w",
     "test": "echo \"Error: no test specified\" && exit 1",
     "demo": "vite demo",
-    "build:demo": "vite build demo"
+    "build:demo": "vite build demo",
+    "publish:all": "npm run build:modular && node scripts/publish-all.js"
   },
   "keywords": [
     "react",

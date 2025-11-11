@@ -369,6 +369,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  min-width: 0; /* Allow flex item to shrink below content size */
+  width: 100%;
 }
 
 .jv-jtable-th-label {
@@ -376,6 +378,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
+  min-width: 0; /* Allow flex item to shrink */
+  flex-wrap: nowrap;
 }
 
 .jv-jtable-sortable {
@@ -438,6 +442,8 @@
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   z-index: 1000;
   min-width: 250px;
+  max-width: 400px;
+  width: max-content;
 }
 
 .jv-jtable-filter-content {
