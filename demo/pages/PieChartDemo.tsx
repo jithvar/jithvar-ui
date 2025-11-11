@@ -1,5 +1,5 @@
 import React from 'react';
-import { PieChart } from '../../src/components/PieChart';
+import { PieChart } from '../../src';
 import { CodeBlock } from '../components/CodeBlock';
 
 export const PieChartDemo: React.FC = () => {

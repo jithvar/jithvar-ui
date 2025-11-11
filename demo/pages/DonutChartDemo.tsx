@@ -1,5 +1,5 @@
 import React from 'react';
-import { DonutChart } from '../../src/components/DonutChart';
+import { DonutChart } from '../../src';
 import { CodeBlock } from '../components/CodeBlock';
 
 export const DonutChartDemo: React.FC = () => {

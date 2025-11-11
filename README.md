@@ -242,12 +242,12 @@ import { JTable } from "jithvar-ui";
   columns={[
     { key: "name", label: "Name", sortable: true, searchable: true },
     { key: "email", label: "Email", sortable: true },
-    { key: "created_at", label: "Created", type: "date" }
+    { key: "created_at", label: "Created", type: "date" },
   ]}
   enableRowSelection
   enableUrlState
   onRowSelect={(rows) => console.log(rows)}
-/>
+/>;
 ```
 
 ### Alerts & Notifications
@@ -259,13 +259,13 @@ import { JAlerts } from "jithvar-ui";
 JAlerts.success({
   title: "Success!",
   message: "Your action was completed successfully.",
-  confirmButtonText: "Got it"
+  confirmButtonText: "Got it",
 });
 
 // Error Alert
 JAlerts.error({
   title: "Error!",
-  message: "Something went wrong. Please try again."
+  message: "Something went wrong. Please try again.",
 });
 
 // Confirmation Dialog
@@ -276,26 +276,26 @@ JAlerts.question({
   cancelButtonText: "Cancel",
   onConfirm: () => {
     // Delete action
-  }
+  },
 });
 
 // Toast Notification
 JAlerts.toast({
   message: "File uploaded successfully",
   type: "success",
-  position: "top-right"
+  position: "top-right",
 });
 ```
 
 ### Form Inputs
 
 ```tsx
-import { 
-  RangeSlider, 
-  CheckboxList, 
-  RadioGroup, 
+import {
+  RangeSlider,
+  CheckboxList,
+  RadioGroup,
   ToggleButtons,
-  MaskInput 
+  MaskInput
 } from "jithvar-ui";
 
 // Range Slider
@@ -378,13 +378,13 @@ Visit `http://localhost:5173` to explore all components.
 
 ### Component Categories
 
-| Category | Components | Description |
-|----------|------------|-------------|
-| 📊 **Charts** | 20 components | Interactive data visualization with tooltips and animations |
-| 🎛️ **Inputs** | 10 components | Advanced form controls with validation |
-| 📐 **Layout** | 2 components | Tabs and collapsible panels |
-| 📋 **Data** | 1 component | Feature-rich data table |
-| 🚨 **Feedback** | 1 component | Alerts and notifications |
+| Category        | Components    | Description                                                 |
+| --------------- | ------------- | ----------------------------------------------------------- |
+| 📊 **Charts**   | 20 components | Interactive data visualization with tooltips and animations |
+| 🎛️ **Inputs**   | 10 components | Advanced form controls with validation                      |
+| 📐 **Layout**   | 2 components  | Tabs and collapsible panels                                 |
+| 📋 **Data**     | 1 component   | Feature-rich data table                                     |
+| 🚨 **Feedback** | 1 component   | Alerts and notifications                                    |
 
 ### Advanced Features
 
@@ -432,20 +432,18 @@ All components support CSS modules and can be customized with CSS variables:
 Jithvar UI is built with TypeScript and provides complete type definitions:
 
 ```tsx
-import type { 
-  ChartDataPoint, 
-  DateRange, 
+import type {
+  ChartDataPoint,
+  DateRange,
   SelectOption,
   JTableColumn,
-  JAlertOptions 
+  JAlertOptions,
 } from "jithvar-ui";
 
-const data: ChartDataPoint[] = [
-  { label: "Jan", value: 100 }
-];
+const data: ChartDataPoint[] = [{ label: "Jan", value: 100 }];
 
 const columns: JTableColumn[] = [
-  { key: "name", label: "Name", sortable: true }
+  { key: "name", label: "Name", sortable: true },
 ];
 ```
 

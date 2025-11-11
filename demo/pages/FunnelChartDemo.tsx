@@ -1,5 +1,5 @@
 import React from 'react';
-import { FunnelChart } from '../../src/components/FunnelChart';
+import { FunnelChart } from '../../src';
 import { CodeBlock } from '../components/CodeBlock';
 
 export const FunnelChartDemo: React.FC = () => {

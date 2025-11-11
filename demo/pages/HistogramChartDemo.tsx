@@ -1,5 +1,5 @@
 import React from 'react';
-import { HistogramChart } from '../../src/components/HistogramChart';
+import { HistogramChart } from '../../src';
 import { CodeBlock } from '../components/CodeBlock';
 
 export const HistogramChartDemo: React.FC = () => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { GaugeChart } from '../../src/components/GaugeChart';
+import { GaugeChart } from '../../src';
 import { CodeBlock } from '../components/CodeBlock';
 
 export const GaugeChartDemo: React.FC = () => {

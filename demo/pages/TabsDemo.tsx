@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Tabs } from '../../src/components/Tabs';
+import { Tabs } from '../../src';
 import { CodeBlock } from '../components/CodeBlock';
 
 export const TabsDemo: React.FC = () => {

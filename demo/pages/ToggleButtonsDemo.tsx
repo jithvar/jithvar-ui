@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ToggleButtons } from '../../src/components/ToggleButtons';
+import { ToggleButtons } from '../../src';
 import { CodeBlock } from '../components/CodeBlock';
 
 export const ToggleButtonsDemo: React.FC = () => {

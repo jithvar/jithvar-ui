@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BarChart } from '../../src/components/BarChart';
+import { BarChart } from '../../src';
 import { CodeBlock } from '../components/CodeBlock';
 
 export const BarChartDemo: React.FC = () => {

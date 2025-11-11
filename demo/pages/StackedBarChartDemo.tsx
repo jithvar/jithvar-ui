@@ -1,5 +1,5 @@
 import React from 'react';
-import { StackedBarChart } from '../../src/components/StackedBarChart';
+import { StackedBarChart } from '../../src';
 import { CodeBlock } from '../components/CodeBlock';
 
 export const StackedBarChartDemo: React.FC = () => {

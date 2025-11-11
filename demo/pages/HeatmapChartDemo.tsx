@@ -1,5 +1,5 @@
 import React from 'react';
-import { HeatmapChart } from '../../src/components/HeatmapChart';
+import { HeatmapChart } from '../../src';
 import { CodeBlock } from '../components/CodeBlock';
 
 export const HeatmapChartDemo: React.FC = () => {

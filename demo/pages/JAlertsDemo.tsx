@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import JAlerts from '../../src/components/JAlerts';
+import { JAlerts } from '../../src';
 import { CodeBlock } from '../components/CodeBlock';
 import { DemoButton } from '../components/DemoButton';
 import SkeletonLoader from '../components/SkeletonLoader';

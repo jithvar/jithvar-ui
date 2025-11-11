@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Collapse } from '../../src/components/Collapse';
+import { Collapse } from '../../src';
 import { CodeBlock } from '../components/CodeBlock';
 
 export const CollapseDemo: React.FC = () => {

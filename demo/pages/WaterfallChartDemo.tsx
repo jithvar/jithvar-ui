@@ -1,5 +1,5 @@
 import React from 'react';
-import { WaterfallChart } from '../../src/components/WaterfallChart';
+import { WaterfallChart } from '../../src';
 import { CodeBlock } from '../components/CodeBlock';
 
 export const WaterfallChartDemo: React.FC = () => {

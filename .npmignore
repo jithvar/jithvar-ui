@@ -9,3 +9,5 @@ tsconfig.json
 rollup.config.js
 vite.config.ts
 demo-dist/
+netlify.toml
+*.md

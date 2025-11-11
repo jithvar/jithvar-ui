@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MaskInput } from '../../src/components/MaskInput';
+import { MaskInput } from '../../src';
 import { CodeBlock } from '../components/CodeBlock';
 
 export const MaskInputDemo: React.FC = () => {

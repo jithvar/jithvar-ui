@@ -1,5 +1,5 @@
 import React from 'react';
-import { CandlestickChart } from '../../src/components/CandlestickChart';
+import { CandlestickChart } from '../../src';
 import { CodeBlock } from '../components/CodeBlock';
 
 export const CandlestickChartDemo: React.FC = () => {

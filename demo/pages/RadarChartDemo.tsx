@@ -1,5 +1,5 @@
 import React from 'react';
-import { RadarChart } from '../../src/components/RadarChart';
+import { RadarChart } from '../../src';
 import { CodeBlock } from '../components/CodeBlock';
 
 export const RadarChartDemo: React.FC = () => {

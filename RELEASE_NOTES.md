@@ -25,6 +25,7 @@ npm install jithvar-ui
 **34 Production-Ready Components:**
 
 1. **Charts (20 components)**
+
    - BarChart, PieChart, DonutChart, LineChart, AreaChart
    - GaugeChart, ScatterPlot, BubbleChart, RadarChart, FunnelChart
    - HeatmapChart, StackedBarChart, WaterfallChart, HistogramChart
@@ -32,14 +33,17 @@ npm install jithvar-ui
    - GanttChart, HeartbeatChart
 
 2. **Inputs (10 components)**
+
    - DatePicker, DateRangePicker, SearchableSelect, RangeSlider
    - Checkbox, CheckboxList, Radio, RadioGroup
    - ToggleButtons, MaskInput
 
 3. **Layout (2 components)**
+
    - Tabs, Collapse
 
 4. **Data (1 component)**
+
    - JTable (Advanced data table with server-side operations)
 
 5. **Feedback (1 component)**
@@ -89,21 +93,25 @@ src/components/
 ## 🎯 Key Features
 
 ### TypeScript First
+
 - 100% TypeScript implementation
 - Complete type definitions included
 - Full IntelliSense support
 
 ### Zero Dependencies
+
 - Pure React + SVG implementation
 - No external chart libraries
 - Lightweight bundle size
 
 ### Enterprise Ready
+
 - Battle-tested in production
 - Responsive and accessible
 - Server-side rendering compatible (Next.js)
 
 ### Developer Friendly
+
 - Tree shakeable imports
 - CSS modules with `jv-` prefix
 - Comprehensive documentation
@@ -126,15 +134,15 @@ import { BarChart, JAlerts, DateRangePicker } from "jithvar-ui";
 <BarChart
   data={[
     { label: "Jan", value: 65 },
-    { label: "Feb", value: 78 }
+    { label: "Feb", value: 78 },
   ]}
   title="Monthly Sales"
-/>
+/>;
 
 // Alerts
 JAlerts.success({
   title: "Success!",
-  message: "Your action completed successfully."
+  message: "Your action completed successfully.",
 });
 
 // Date Range Picker
@@ -145,12 +153,13 @@ JAlerts.success({
     setStartDate(start);
     setEndDate(end);
   }}
-/>
+/>;
 ```
 
 ## 🔄 Next Steps
 
 ### Future Enhancements
+
 - [ ] Migrate demo to Next.js for better SEO and showcase
 - [ ] Add chart export functionality (save as image)
 - [ ] Create interactive documentation site
@@ -160,6 +169,7 @@ JAlerts.success({
 - [ ] Storybook integration
 
 ### Community
+
 - [ ] Set up GitHub Discussions
 - [ ] Create contribution guidelines
 - [ ] Add code of conduct
@@ -175,6 +185,7 @@ Special thanks to the React community and all contributors!
 ---
 
 **For support, questions, or feature requests, please visit:**
+
 - GitHub Issues: https://github.com/jithvar/jithvar-ui/issues
 - Email: contact@jithvar.com
 

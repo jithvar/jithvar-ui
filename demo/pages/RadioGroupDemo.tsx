@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { RadioGroup } from '../../src/components/RadioGroup';
+import { RadioGroup } from '../../src';
 import { CodeBlock } from '../components/CodeBlock';
 
 export const RadioGroupDemo: React.FC = () => {

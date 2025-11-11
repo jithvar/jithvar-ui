@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CheckboxList } from '../../src/components/CheckboxList';
+import { CheckboxList } from '../../src';
 import { CodeBlock } from '../components/CodeBlock';
 
 export const CheckboxListDemo: React.FC = () => {

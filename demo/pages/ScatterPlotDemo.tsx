@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScatterPlot } from '../../src/components/ScatterPlot';
+import { ScatterPlot } from '../../src';
 import { CodeBlock } from '../components/CodeBlock';
 
 export const ScatterPlotDemo: React.FC = () => {

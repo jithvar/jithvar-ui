@@ -1,5 +1,5 @@
 import React from 'react';
-import { BubbleChart } from '../../src/components/BubbleChart';
+import { BubbleChart } from '../../src';
 import { CodeBlock } from '../components/CodeBlock';
 
 export const BubbleChartDemo: React.FC = () => {
