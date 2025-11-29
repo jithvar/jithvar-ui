@@ -33,6 +33,13 @@
   gap: 0.5rem;
 }
 
+.jv-jtable-column-toggle-and-clear
+{
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .jv-jtable-bulk-actions-count {
   font-size: 0.875rem;
   font-weight: 600;
@@ -170,6 +177,7 @@
   border-radius: 0.5rem;
   font-size: 0.875rem;
   transition: all 0.2s;
+  color:black
 }
 
 .jv-jtable-search-input:focus {
@@ -244,6 +252,38 @@
 
 .jv-jtable-column-toggle-item input {
   cursor: pointer;
+}
+
+/* Clear All Filters Button */
+.jv-jtable-clear-all-btn {
+  padding: 0.75rem 1rem;
+  border: 1px solid #ef4444;
+  border-radius: 0.5rem;
+  background: white;
+  color: #ef4444;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.jv-jtable-clear-all-btn:hover {
+  background: #fef2f2;
+  border-color: #dc2626;
+  color: #dc2626;
+  box-shadow: 0 4px 6px rgba(239, 68, 68, 0.1);
+}
+
+.jv-jtable-clear-all-btn:active {
+  transform: scale(0.98);
+}
+
+.jv-jtable-clear-all-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* Table Container */
@@ -431,11 +471,11 @@
   border-color: #3b82f6;
   color: white;
 }
-
+/* 
 .jv-jtable-filter-dropdown {
   position: absolute;
   top: calc(100% + 0.5rem);
-  left: 0;
+  right: 0;
   background: white;
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
@@ -444,7 +484,21 @@
   min-width: 250px;
   max-width: 400px;
   width: max-content;
+} */
+
+.jv-jtable-filter-dropdown {
+  position: fixed; /* fixed, not absolute */
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  z-index: 2000;
+  min-width: 250px;
+  max-width: 400px;
+  width: max-content;
 }
+
+
 
 .jv-jtable-filter-content {
   padding: 1rem;
@@ -1036,4 +1090,84 @@
     height: 36px;
     font-size: 16px;
   }
+}
+
+
+
+
+
+
+
+
+.jv-jtable-export {
+  position: relative;
+  display: inline-block;
+}
+
+.jv-jtable-export-btn {
+  background: #4caf50;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.jv-jtable-export-btn:disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+}
+
+.jv-jtable-export-btn:hover:not(:disabled) {
+  background: #45a049;
+}
+
+.jv-jtable-export-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.jv-jtable-export-dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 220px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-radius: 4px;
+  z-index: 1000;
+  top: 100%;
+  left: 0;
+  margin-top: 4px;
+}
+
+.jv-jtable-export-dropdown:hover .jv-jtable-export-dropdown-content {
+  display: block;
+}
+
+.jv-jtable-export-dropdown-content button {
+  background: none;
+  border: none;
+  padding: 12px 16px;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  font-size: 14px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.jv-jtable-export-dropdown-content button:hover:not(:disabled) {
+  background-color: #f5f5f5;
+}
+
+.jv-jtable-export-dropdown-content button:disabled {
+  color: #999;
+  cursor: not-allowed;
+}
+
+.jv-jtable-export-dropdown-content button:last-child {
+  border-bottom: none;
 }

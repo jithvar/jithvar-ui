@@ -4,6 +4,18 @@ import { RangeSlider } from '../../inputs/RangeSlider';
 import { JTableColumn, JTableAction, JTableFloatingAction, JTableProps, FilterState, DateRange } from '../../../types';
 import { classNames, debounce } from '../../../utils/helpers';
 import './JTable.css';
+import * as XLSX from 'xlsx';
+
+// Add this interface for export options
+interface ExportOptions {
+  type: 'all' | 'filtered' | 'selected';
+  filename?: string;
+}
+
+
+
+
+
 
 interface TableState {
   page: number;
@@ -16,6 +28,7 @@ interface TableState {
   visibleColumns: string[];
   activeFilterColumn: string | null;
 }
+
 
 export const JTable: React.FC<JTableProps> = ({
   columns,
@@ -49,7 +62,6 @@ export const JTable: React.FC<JTableProps> = ({
   rowStyle,
   cellClassName,
   emptyMessage = 'No data available',
-  loadingMessage = 'Loading...',
   onRowClick,
   onRowDoubleClick,
   stickyHeader = false,
@@ -59,10 +71,11 @@ export const JTable: React.FC<JTableProps> = ({
   compact = false,
 }) => {
   // Determine if we should use URL state
+  const [exportLoading, setExportLoading] = useState(false);
   const shouldUseUrlState = enableUrlState;
   const [state, setState] = useState<TableState>(() => {
     const defaultVisibleColumns = columns.filter(c => c.visible !== false).map(c => c.key);
-    
+
     if (!shouldUseUrlState) {
       // Don't read from URL in client mode or when URL state is disabled
       return {
@@ -77,10 +90,10 @@ export const JTable: React.FC<JTableProps> = ({
         activeFilterColumn: null,
       };
     }
-    
+
     const params = new URLSearchParams(window.location.search);
     const visibleCols = params.get('visibleColumns')?.split(',') || defaultVisibleColumns;
-    
+
     // Only read from URL if values exist (don't use defaults)
     return {
       page: params.has('page') ? parseInt(params.get('page')!) : 1,
@@ -109,32 +122,32 @@ export const JTable: React.FC<JTableProps> = ({
   // Update URL when state changes (only add non-default values)
   const updateURL = useCallback((newState: TableState) => {
     if (!shouldUseUrlState) return;
-    
+
     const params = new URLSearchParams();
-    
+
     // Only add page if not default (1)
     if (newState.page !== 1) {
       params.set('page', String(newState.page));
     }
-    
+
     // Only add pageSize if not default
     if (newState.pageSize !== defaultPageSize) {
       params.set('pageSize', String(newState.pageSize));
     }
-    
+
     if (newState.sortColumn) {
       params.set('sortColumn', newState.sortColumn);
       params.set('sortDirection', newState.sortDirection);
     }
-    
+
     if (newState.universalSearch) {
       params.set('search', newState.universalSearch);
     }
-    
+
     if (newState.visibleColumns.length < columns.length) {
       params.set('visibleColumns', newState.visibleColumns.join(','));
     }
-    
+
     // Add column filters
     Object.entries(newState.columnFilters).forEach(([key, filterState]) => {
       if (filterState.text) {
@@ -149,8 +162,8 @@ export const JTable: React.FC<JTableProps> = ({
         params.set(`filter_${key}_max`, String(filterState.numberRange[1]));
       }
     });
-    
-    const newUrl = params.toString() 
+
+    const newUrl = params.toString()
       ? `${window.location.pathname}?${params.toString()}`
       : window.location.pathname;
     window.history.pushState({}, '', newUrl);
@@ -162,32 +175,32 @@ export const JTable: React.FC<JTableProps> = ({
     if (!apiUrl) {
       return;
     }
-    
+
     setLoading(true);
     setError(null);
 
     try {
       const params = new URLSearchParams();
-      
+
       // Use custom parameter names or defaults
       const pageParam = apiParams.page || 'page';
       const pageSizeParam = apiParams.pageSize || 'pageSize';
       const sortColumnParam = apiParams.sortColumn || 'sortColumn';
       const sortDirectionParam = apiParams.sortDirection || 'sortDirection';
       const searchParam = apiParams.universalSearch || 'search';
-      
+
       params.set(pageParam, String(state.page));
       params.set(pageSizeParam, String(state.pageSize));
-      
+
       if (state.sortColumn) {
         params.set(sortColumnParam, state.sortColumn);
         params.set(sortDirectionParam, state.sortDirection);
       }
-      
+
       if (state.universalSearch) {
         params.set(searchParam, state.universalSearch);
       }
-      
+
       // Add column filters
       Object.entries(state.columnFilters).forEach(([key, filterState]) => {
         if (filterState.text) {
@@ -211,27 +224,108 @@ export const JTable: React.FC<JTableProps> = ({
       }
 
       const result = await response.json();
-      
+      console.log("result", result)
+
+      //   // Extract data using custom path or fallback to common patterns
+      //   let extractedData;
+      //   let extractedTotal;
+
+      //   // If result is directly an array (e.g., JSONPlaceholder)
+      //   if (Array.isArray(result)) {
+      //     extractedData = result;
+      //     extractedTotal = result.length;
+      //   } else {
+      //     extractedData = result[dataPath] || result.data || result.results || result.masters || result ;
+      //     extractedTotal = result[totalPath] || result.total || result.totalRecords || result.totalMasters || (Array.isArray(extractedData) ? extractedData.length : 0);
+      //   }
+
+
+
+
       // Extract data using custom path or fallback to common patterns
       let extractedData;
       let extractedTotal;
-      
+
+      // Robust helper function to get nested values using dot notation
+      const getNestedValue = (obj: any, path: string | undefined): any => {
+        if (!path || !obj) return undefined;
+        try {
+          return path.split('.').reduce((current, key) => {
+            if (current === null || current === undefined) return undefined;
+            return current[key];
+          }, obj);
+        } catch (error) {
+          return undefined;
+        }
+      };
+
       // If result is directly an array (e.g., JSONPlaceholder)
       if (Array.isArray(result)) {
         extractedData = result;
         extractedTotal = result.length;
       } else {
-        extractedData = result[dataPath] || result.data || result.results || result.masters || result;
-        extractedTotal = result[totalPath] || result.total || result.totalRecords || result.totalMasters || (Array.isArray(extractedData) ? extractedData.length : 0);
+        // PRIORITY 1: Use provided paths with dot notation support
+        if (dataPath) {
+          extractedData = getNestedValue(result, dataPath);
+        }
+
+        // PRIORITY 2: Auto-discovery if explicit path didn't work
+        if (!extractedData || !Array.isArray(extractedData)) {
+          // Common generic data paths (no domain-specific names)
+          const commonPaths = ['data', 'results', 'items', 'list', 'records', 'content'];
+          for (const path of commonPaths) {
+            const potentialData = getNestedValue(result, path);
+            if (Array.isArray(potentialData)) {
+              extractedData = potentialData;
+              break;
+            }
+          }
+        }
+
+        // PRIORITY 3: Last resort - use result itself
+        if (!extractedData || !Array.isArray(extractedData)) {
+          extractedData = result;
+        }
+
+        // TOTAL COUNT EXTRACTION
+        if (totalPath) {
+          extractedTotal = getNestedValue(result, totalPath);
+        }
+
+        if (extractedTotal === undefined || extractedTotal === null) {
+          // Common generic total paths
+          const totalPaths = ['total', 'count', 'totalCount', 'totalRecords', 'pagination.total', 'meta.total'];
+          for (const path of totalPaths) {
+            const potentialTotal = getNestedValue(result, path);
+            if (typeof potentialTotal === 'number' && potentialTotal >= 0) {
+              extractedTotal = potentialTotal;
+              break;
+            }
+          }
+        }
+
+        // Final fallback
+        if ((extractedTotal === undefined || extractedTotal === null) && Array.isArray(extractedData)) {
+          extractedTotal = extractedData.length;
+        }
       }
-      
+
+      // Final safety check
+      extractedData = Array.isArray(extractedData) ? extractedData : [];
+      extractedTotal = typeof extractedTotal === 'number' && extractedTotal >= 0 ? extractedTotal : extractedData.length;
+
+      console.log('Extracted Data:', extractedData);
+      console.log('Extracted Total:', extractedTotal);
+
+
+
       setData(Array.isArray(extractedData) ? extractedData : []);
       setTotalRecords(extractedTotal);
-      
+
       // Calculate min/max for number columns
       if (Array.isArray(extractedData) && extractedData.length > 0) {
         const stats: Record<string, { min: number; max: number }> = {};
-        
+
         columns.forEach(col => {
           if (col.type === 'number') {
             const values = extractedData.map((row: any) => row[col.key]).filter((v: any) => typeof v === 'number');
@@ -243,7 +337,7 @@ export const JTable: React.FC<JTableProps> = ({
             }
           }
         });
-        
+
         setColumnStats(stats);
       }
     } catch (err) {
@@ -251,6 +345,9 @@ export const JTable: React.FC<JTableProps> = ({
       setData([]);
       setTotalRecords(0);
     } finally {
+
+      console.log('Data Path:', dataPath);
+      console.log('Total Path:', totalPath);
       setLoading(false);
     }
   }, [state.page, state.pageSize, state.sortColumn, state.sortDirection, state.universalSearch, state.columnFilters, apiUrl, apiHeaders, apiParams, columns, dataPath, totalPath]);
@@ -360,7 +457,7 @@ export const JTable: React.FC<JTableProps> = ({
   const handleSelectRow = (rowId: string, checked: boolean) => {
     setState((prev) => {
       let newSelectedRows: string[];
-      
+
       if (selectionMode === 'single') {
         newSelectedRows = checked ? [rowId] : [];
       } else {
@@ -368,10 +465,10 @@ export const JTable: React.FC<JTableProps> = ({
           ? [...prev.selectedRows, rowId]
           : prev.selectedRows.filter((id) => id !== rowId);
       }
-      
+
       const selectedData = data.filter((row) => newSelectedRows.includes(row[rowKey]));
       onSelectionChange?.(selectedData);
-      
+
       return { ...prev, selectedRows: newSelectedRows };
     });
   };
@@ -448,7 +545,7 @@ export const JTable: React.FC<JTableProps> = ({
                 />
               </div>
             )}
-            
+
             {hasFilter && (
               <button
                 className="jv-jtable-filter-clear"
@@ -584,21 +681,21 @@ export const JTable: React.FC<JTableProps> = ({
 
   const handleCellMouseEnter = (e: React.MouseEvent, rowId: string, columnKey: string) => {
     if (!floatingActions?.enabled) return;
-    
+
     // Don't show floating actions on checkbox, id, or action columns
     const excludedColumns = ['id', 'actions', rowKey];
     if (excludedColumns.includes(columnKey)) return;
-    
+
     // Clear any pending hide timeout
     if (hideFloatingMenuTimeoutRef.current) {
       clearTimeout(hideFloatingMenuTimeoutRef.current);
       hideFloatingMenuTimeoutRef.current = null;
     }
-    
+
     // Position at the bottom center of the cell, 5px up
     const cell = e.currentTarget as HTMLElement;
     const rect = cell.getBoundingClientRect();
-    
+
     setFloatingMenuPosition({
       x: rect.left + rect.width / 2, // Center horizontally
       y: rect.bottom - 5, // Bottom of cell, 5px up
@@ -609,25 +706,25 @@ export const JTable: React.FC<JTableProps> = ({
 
   const handleCellMouseLeave = (e: React.MouseEvent) => {
     if (!floatingActions?.enabled) return;
-    
+
     // Check if mouse is moving to the floating menu
     const relatedTarget = e.relatedTarget as HTMLElement;
     if (floatingMenuRef.current && floatingMenuRef.current.contains(relatedTarget)) {
       return; // Don't hide if moving to menu
     }
-    
+
     // Clear any existing timeout
     if (hideFloatingMenuTimeoutRef.current) {
       clearTimeout(hideFloatingMenuTimeoutRef.current);
     }
-    
+
     // Set a new timeout to hide the menu
     hideFloatingMenuTimeoutRef.current = setTimeout(() => {
       // Check if mouse is still not over the cell or menu
       const hoveredElement = document.querySelector(':hover');
       const isCellHovered = hoveredElement?.closest('.jv-jtable-td');
       const isMenuHovered = floatingMenuRef.current?.matches(':hover');
-      
+
       if (!isCellHovered && !isMenuHovered) {
         setFloatingMenuPosition(null);
       }
@@ -643,7 +740,7 @@ export const JTable: React.FC<JTableProps> = ({
 
     const actions = floatingActions.actions || [];
     const rowIndex = data.findIndex(r => r[rowKey] === floatingMenuPosition.rowId);
-    
+
     // Get the cell value for the current column
     const cellValue = row[floatingMenuPosition.columnKey];
 
@@ -705,15 +802,15 @@ export const JTable: React.FC<JTableProps> = ({
 
           const handleClick = (e: React.MouseEvent) => {
             e.stopPropagation();
-            
+
             // Handle copy action with cell value and show context-specific message
             if (action.type === 'copy' && fieldValue) {
               navigator.clipboard.writeText(String(fieldValue));
-              
+
               // Show context-specific message based on column
               let message = 'Copied to clipboard!';
               const columnKey = floatingMenuPosition.columnKey;
-              
+
               if (columnKey === 'name') {
                 message = 'Name & designation copied!';
               } else if (columnKey === 'phone') {
@@ -735,7 +832,7 @@ export const JTable: React.FC<JTableProps> = ({
                   message = `${column.label} copied!`;
                 }
               }
-              
+
               // Show temporary notification (you can customize this)
               const notification = document.createElement('div');
               notification.textContent = message;
@@ -761,7 +858,7 @@ export const JTable: React.FC<JTableProps> = ({
             } else if (href) {
               window.location.href = href;
             }
-            
+
             action.onClick(row, rowIndex);
             setFloatingMenuPosition(null);
           };
@@ -785,21 +882,21 @@ export const JTable: React.FC<JTableProps> = ({
 
   const getRowClassName = (row: any, index: number): string => {
     const classes = ['jv-jtable-row'];
-    
+
     if (state.selectedRows.includes(row[rowKey])) {
       classes.push('jv-jtable-row-selected');
     }
-    
+
     if (striped && index % 2 === 1) {
       classes.push('jv-jtable-row-striped');
     }
-    
+
     if (typeof rowClassName === 'function') {
       classes.push(rowClassName(row, index));
     } else if (rowClassName) {
       classes.push(rowClassName);
     }
-    
+
     return classes.join(' ');
   };
 
@@ -812,35 +909,230 @@ export const JTable: React.FC<JTableProps> = ({
 
   const getCellClassName = (column: JTableColumn, value: any, row: any, index: number): string => {
     const classes: string[] = ['jv-jtable-td'];
-    
+
     // Column-specific className
     if (typeof column.className === 'function') {
       classes.push(column.className(value, row, index));
     } else if (column.className) {
       classes.push(column.className);
     }
-    
+
     // Global cellClassName
     if (typeof cellClassName === 'function') {
       classes.push(cellClassName(value, row, column, index));
     } else if (cellClassName) {
       classes.push(cellClassName);
     }
-    
+
     return classes.filter(Boolean).join(' ');
   };
 
   const getCellStyle = (column: JTableColumn, value: any, row: any, index: number): React.CSSProperties => {
     const baseStyle: React.CSSProperties = { textAlign: column.align };
-    
+
     if (typeof column.cellStyle === 'function') {
       return { ...baseStyle, ...column.cellStyle(value, row, index) };
     } else if (column.cellStyle) {
       return { ...baseStyle, ...column.cellStyle };
     }
-    
+
     return baseStyle;
   };
+
+
+
+  const clearAll = useCallback(() => {
+    setState(prev => ({
+      page: 1,
+      pageSize: defaultPageSize,
+      sortColumn: null,
+      sortDirection: 'asc',
+      universalSearch: '',
+      columnFilters: {},
+      selectedRows: [],
+      visibleColumns: columns.filter(c => c.visible !== false).map(c => c.key),
+      activeFilterColumn: null,
+    }));
+  }, [columns, defaultPageSize]);
+
+  const exportToExcel = useCallback(async (options: ExportOptions) => {
+    setExportLoading(true);
+
+    try {
+      let exportData: any[] = [];
+      let filename = options.filename || 'table_data';
+
+      if (options.type === 'selected' && state.selectedRows.length > 0) {
+        // Export only selected rows
+        exportData = data.filter(row => state.selectedRows.includes(row[rowKey]));
+        filename = `${filename}_selected_${state.selectedRows.length}_rows`;
+      } else {
+        // For 'all' or 'filtered', we need to fetch all data with current filters
+        const params = new URLSearchParams();
+
+        // Use the same API parameters as current state
+        const pageParam = apiParams.page || 'page';
+        const pageSizeParam = apiParams.pageSize || 'pageSize';
+        const sortColumnParam = apiParams.sortColumn || 'sortColumn';
+        const sortDirectionParam = apiParams.sortDirection || 'sortDirection';
+        const searchParam = apiParams.universalSearch || 'search';
+
+        // For export, we want ALL data, so set pageSize to a large number or total records
+        const exportPageSize = totalRecords > 0 ? totalRecords : 10000;
+
+        params.set(pageParam, '1'); // Always page 1 for export
+        params.set(pageSizeParam, String(exportPageSize));
+
+        if (state.sortColumn) {
+          params.set(sortColumnParam, state.sortColumn);
+          params.set(sortDirectionParam, state.sortDirection);
+        }
+
+        if (state.universalSearch) {
+          params.set(searchParam, state.universalSearch);
+        }
+
+        // Add current column filters
+        Object.entries(state.columnFilters).forEach(([key, filterState]) => {
+          if (filterState.text) {
+            params.set(key, filterState.text);
+          }
+          if (filterState.dateRange?.startDate && filterState.dateRange?.endDate) {
+            params.set(`${key}_start`, filterState.dateRange.startDate.toISOString());
+            params.set(`${key}_end`, filterState.dateRange.endDate.toISOString());
+          }
+          if (filterState.numberRange) {
+            params.set(`${key}_min`, String(filterState.numberRange[0]));
+            params.set(`${key}_max`, String(filterState.numberRange[1]));
+          }
+        });
+
+        const url = `${apiUrl}${apiUrl.includes('?') ? '&' : '?'}${params.toString()}`;
+        const response = await fetch(url, { headers: apiHeaders });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        // Use the same data extraction logic as fetchData
+        const getNestedValue = (obj: any, path: string | undefined): any => {
+          if (!path || !obj) return undefined;
+          try {
+            return path.split('.').reduce((current, key) => {
+              if (current === null || current === undefined) return undefined;
+              return current[key];
+            }, obj);
+          } catch (error) {
+            return undefined;
+          }
+        };
+
+        let extractedData;
+
+        if (Array.isArray(result)) {
+          extractedData = result;
+        } else {
+          if (dataPath) {
+            extractedData = getNestedValue(result, dataPath);
+          }
+
+          if (!extractedData || !Array.isArray(extractedData)) {
+            const commonPaths = ['data', 'results', 'items', 'list', 'records', 'content'];
+            for (const path of commonPaths) {
+              const potentialData = getNestedValue(result, path);
+              if (Array.isArray(potentialData)) {
+                extractedData = potentialData;
+                break;
+              }
+            }
+          }
+
+          if (!extractedData || !Array.isArray(extractedData)) {
+            extractedData = result;
+          }
+        }
+
+        exportData = Array.isArray(extractedData) ? extractedData : [];
+
+        // Determine filename based on whether filters are active
+        const hasFilters = state.universalSearch || Object.keys(state.columnFilters).length > 0;
+        if (options.type === 'filtered' && hasFilters) {
+          filename = `${filename}_filtered`;
+        } else {
+          filename = `${filename}_all`;
+        }
+      }
+
+      if (exportData.length === 0) {
+        // Show notification for empty data
+        showNotification('No data available to export', 'warning');
+        return;
+      }
+
+      // Prepare data for export - only include visible columns
+      const exportColumns = visibleColumnsData.filter(col =>
+        col.key !== 'actions' && col.key !== 'id' // Exclude action and ID columns if needed
+      );
+
+      const worksheetData = exportData.map(row => {
+        const exportRow: any = {};
+        exportColumns.forEach(col => {
+          exportRow[col.label] = row[col.key];
+        });
+        return exportRow;
+      });
+
+      // Create worksheet and workbook
+      const ws = XLSX.utils.json_to_sheet(worksheetData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+      // Generate and download file
+      XLSX.writeFile(wb, `${filename}.xlsx`);
+
+      // Show success notification
+      showNotification(`Successfully exported ${exportData.length} records`, 'success');
+
+    } catch (error) {
+      console.error('Export error:', error);
+      showNotification('Failed to export data', 'error');
+    } finally {
+      setExportLoading(false);
+    }
+  }, [
+    state.selectedRows,
+    state.universalSearch,
+    state.columnFilters,
+    state.sortColumn,
+    state.sortDirection,
+    data,
+    totalRecords,
+    apiUrl,
+    apiHeaders,
+    apiParams,
+    dataPath,
+    rowKey,
+    visibleColumnsData
+  ]);
+
+
+  // Check if any filters are active
+  const hasActiveFilters =
+    state.universalSearch !== '' ||
+    Object.keys(state.columnFilters).length > 0 ||
+    state.sortColumn !== null ||
+    state.selectedRows.length > 0;
+
+  // Helper function for notifications (you can replace with your preferred notification system)
+  const showNotification = (message: string, type: 'success' | 'error' | 'warning' = 'success') => {
+    // You can integrate with your preferred notification library
+    // For now, using alert as fallback
+    alert(`${type.toUpperCase()}: ${message}`);
+  };
+
+
 
   return (
     <div className={classNames('jv-jtable', className)}>
@@ -860,26 +1152,89 @@ export const JTable: React.FC<JTableProps> = ({
           </div>
         )}
 
-        {/* Column Toggle */}
-        {enableColumnToggle && (
-          <div className="jv-jtable-column-toggle">
-            <button className="jv-jtable-column-toggle-btn" type="button">
-              ⚙️ Columns
-              <div className="jv-jtable-column-toggle-dropdown">
-                {columns.map((col) => (
-                  <label key={col.key} className="jv-jtable-column-toggle-item">
-                    <input
-                      type="checkbox"
-                      checked={state.visibleColumns.includes(col.key)}
-                      onChange={() => toggleColumnVisibility(col.key)}
-                    />
-                    <span>{col.label}</span>
-                  </label>
-                ))}
-              </div>
-            </button>
+
+        <div className="jv-jtable-controls">
+          {/* Add this to the controls section, after universal search */}
+          <div className="jv-jtable-export ">
+            <div className="jv-jtable-export-dropdown">
+              <button
+                className=" jv-jtable-column-toggle-btn"
+                disabled={exportLoading || data.length === 0}
+                type="button"
+              >
+                {exportLoading ? 'Exporting...' : 'Export'}
+                <div className="jv-jtable-export-dropdown-content">
+                  {/* Export All Data */}
+                  <button
+                    onClick={() => exportToExcel({ type: 'all' })}
+                    disabled={exportLoading || data.length === 0}
+                    type="button"
+                    title="Export all data without any filters"
+                  >
+                    Export All Data ({totalRecords} records)
+                  </button>
+
+                  {/* Export Filtered Data */}
+                  <button
+                    onClick={() => exportToExcel({ type: 'filtered' })}
+                    disabled={exportLoading || data.length === 0 || !hasActiveFilters}
+                    type="button"
+                    title="Export data with current filters and search applied"
+                  >
+                    Export Filtered Data
+                    {(state.universalSearch || Object.keys(state.columnFilters).length > 0) &&
+                      ` (${totalRecords} records)`
+                    }
+                  </button>
+
+                  {/* Export Selected Rows */}
+                  <button
+                    onClick={() => exportToExcel({ type: 'selected' })}
+                    disabled={exportLoading || state.selectedRows.length === 0}
+                    type="button"
+                    title="Export only selected rows"
+                  >
+                    Export Selected Rows ({state.selectedRows.length} records)
+                  </button>
+                </div>
+              </button>
+            </div>
           </div>
-        )}
+
+          {/* Column Toggle */}
+          {enableColumnToggle && (
+            <div className="jv-jtable-column-toggle">
+              <button className="jv-jtable-column-toggle-btn" type="button">
+                ⚙️ Columns
+                <div className="jv-jtable-column-toggle-dropdown">
+                  {columns.map((col) => (
+                    <label key={col.key} className="jv-jtable-column-toggle-item">
+                      <input
+                        type="checkbox"
+                        checked={state.visibleColumns.includes(col.key)}
+                        onChange={() => toggleColumnVisibility(col.key)}
+                      />
+                      <span>{col.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </button>
+            </div>
+          )}
+
+
+
+          {/* Clear All Button */}
+          <button
+            className="jv-jtable-column-toggle-btn"
+            onClick={clearAll}
+            disabled={!hasActiveFilters && state.selectedRows.length === 0}
+            type="button"
+            title="Clear all filters, search, sorting and selections"
+          >
+            🗑️ Clear All
+          </button>
+        </div>
       </div>
 
       {/* Bulk Actions Bar */}
@@ -894,7 +1249,7 @@ export const JTable: React.FC<JTableProps> = ({
             {bulkActions.map((action, index) => {
               const selectedRowsData = data.filter(row => state.selectedRows.includes(row[rowKey]));
               const isDisabled = action.disabled ? action.disabled(selectedRowsData) : false;
-              
+
               return (
                 <button
                   key={index}
@@ -919,12 +1274,6 @@ export const JTable: React.FC<JTableProps> = ({
         bordered && 'jv-jtable-bordered',
         compact && 'jv-jtable-compact'
       )}>
-        {loading && (
-          <div className="jv-jtable-loading-overlay">
-            <div className="jv-jtable-spinner"></div>
-            <span>{loadingMessage}</span>
-          </div>
-        )}
 
         {error && (
           <div className="jv-jtable-error">
@@ -1209,3 +1558,4 @@ export const JTable: React.FC<JTableProps> = ({
     </div>
   );
 };
+

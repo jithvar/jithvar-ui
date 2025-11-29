@@ -339,41 +339,233 @@ JAlerts.toast({
             </div>
           </section>
 
-          {/* Custom Buttons */}
+          {/* Custom Icons */}
           <section className="jv-section">
-            <h2>🎨 Custom Buttons</h2>
-            <p>Create alerts with custom buttons and actions.</p>
+            <h2>🎭 Custom Icons</h2>
+            <p>Pass your own custom icons/React elements instead of default icons.</p>
             
             <div className="jv-demo-preview">
-              <DemoButton
-                variant="primary"
-                onClick={() => {
-                  JAlerts.custom({
-                    title: 'Choose an Option',
-                    message: 'Select one of the options below',
-                    buttons: [
-                      {
-                        text: 'Option 1',
-                        variant: 'primary',
-                        onClick: () => setLastResult('Option 1 selected')
-                      },
-                      {
-                        text: 'Option 2',
-                        variant: 'success',
-                        onClick: () => setLastResult('Option 2 selected')
-                      },
-                      {
-                        text: 'Cancel',
-                        variant: 'secondary',
-                        onClick: () => setLastResult('Cancelled')
-                      }
-                    ]
-                  });
-                }}
-              >
-                🎯 Custom Buttons
-              </DemoButton>
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                <DemoButton
+                  variant="primary"
+                  onClick={() => {
+                    JAlerts.success({
+                      title: 'Custom Icon',
+                      message: 'This alert uses a custom icon',
+                      customIcon: (
+                        <div style={{
+                          width: '80px',
+                          height: '80px',
+                          margin: '0 auto 24px',
+                          borderRadius: '50%',
+                          background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          boxShadow: '0 10px 40px rgba(236, 72, 153, 0.3)',
+                          animation: 'bounceIn 0.6s ease-out',
+                          fontSize: '40px'
+                        }}>
+                          🎉
+                        </div>
+                      ),
+                      showIcon: true
+                    });
+                  }}
+                >
+                  🎉 Emoji Icon
+                </DemoButton>
+
+                <DemoButton
+                  variant="success"
+                  onClick={() => {
+                    JAlerts.info({
+                      title: 'Rocket Icon',
+                      message: 'Launch your project with custom icons',
+                      customIcon: (
+                        <div style={{
+                          width: '80px',
+                          height: '80px',
+                          margin: '0 auto 24px',
+                          borderRadius: '50%',
+                          background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          boxShadow: '0 10px 40px rgba(6, 182, 212, 0.3)',
+                          animation: 'bounceIn 0.6s ease-out',
+                          fontSize: '40px'
+                        }}>
+                          🚀
+                        </div>
+                      ),
+                      showIcon: true
+                    });
+                  }}
+                >
+                  🚀 Rocket Icon
+                </DemoButton>
+
+                <DemoButton
+                  variant="info"
+                  onClick={async () => {
+                    const result = await JAlerts.confirm({
+                      title: 'Custom Star Icon',
+                      message: 'Do you like this custom icon?',
+                      confirmButtonText: 'Yes!',
+                      cancelButtonText: 'No',
+                      customIcon: (
+                        <div style={{
+                          width: '80px',
+                          height: '80px',
+                          margin: '0 auto 24px',
+                          borderRadius: '50%',
+                          background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          boxShadow: '0 10px 40px rgba(251, 191, 36, 0.3)',
+                          animation: 'bounceIn 0.6s ease-out',
+                          fontSize: '40px'
+                        }}>
+                          ⭐
+                        </div>
+                      ),
+                      showIcon: true,
+                      confirmButtonColor: '#fbbf24'
+                    });
+                    
+                    setLastResult(result.isConfirmed ? 'Love it! ⭐' : 'Maybe next time');
+                  }}
+                >
+                  ⭐ Star Icon
+                </DemoButton>
+              </div>
             </div>
+
+            <CodeBlock 
+              code={`// Pass custom icons as React elements
+JAlerts.success({
+  title: 'Custom Icon',
+  message: 'This alert uses a custom icon',
+  customIcon: (
+    <div style={{
+      width: '80px',
+      height: '80px',
+      borderRadius: '50%',
+      background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: '40px'
+    }}>
+      🎉
+    </div>
+  ),
+  showIcon: true
+});`} 
+              language="typescript" 
+            />
+          </section>
+
+          {/* Custom Button Colors */}
+          <section className="jv-section">
+            <h2>🎨 Custom Button Colors</h2>
+            <p>Apply custom colors to confirm and cancel buttons, with icon auto-colorization.</p>
+            
+            <div className="jv-demo-preview">
+              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                <DemoButton
+                  variant="primary"
+                  onClick={async () => {
+                    const confirmResult = await JAlerts.confirm({
+                      title: 'Delete Item?',
+                      message: 'This action cannot be undone. Are you sure?',
+                      confirmButtonText: 'Yes, Delete',
+                      cancelButtonText: 'Cancel',
+                      confirmButtonColor: '#ef4444',
+                      cancelButtonColor: '#6b7280',
+                      showIcon: true
+                    });
+                    
+                    setLastResult(confirmResult.isConfirmed ? 'Deleted ✓' : 'Cancelled ✕');
+                  }}
+                >
+                  🗑️ Custom Red Delete
+                </DemoButton>
+
+                <DemoButton
+                  variant="success"
+                  onClick={async () => {
+                    const confirmResult = await JAlerts.confirm({
+                      title: 'Confirm Purchase?',
+                      message: 'Proceed with the payment?',
+                      confirmButtonText: 'Pay Now',
+                      cancelButtonText: 'Cancel',
+                      confirmButtonColor: '#22c55e',
+                      cancelButtonColor: '#94a3b8',
+                      showIcon: true
+                    });
+                    
+                    setLastResult(confirmResult.isConfirmed ? 'Payment Confirmed ✓' : 'Cancelled ✕');
+                  }}
+                >
+                  💳 Green Payment
+                </DemoButton>
+
+                <DemoButton
+                  variant="info"
+                  onClick={async () => {
+                    const confirmResult = await JAlerts.confirm({
+                      title: 'Submit Form?',
+                      message: 'Review all information before submitting.',
+                      confirmButtonText: 'Submit',
+                      cancelButtonText: 'Review Again',
+                      confirmButtonColor: '#3b82f6',
+                      cancelButtonColor: '#f3f4f6',
+                      showIcon: true
+                    });
+                    
+                    setLastResult(confirmResult.isConfirmed ? 'Submitted ✓' : 'Reviewing ✕');
+                  }}
+                >
+                  📝 Blue Submit
+                </DemoButton>
+
+                <DemoButton
+                  variant="warning"
+                  onClick={async () => {
+                    const confirmResult = await JAlerts.confirm({
+                      title: 'Download File?',
+                      message: 'This file will be downloaded to your device.',
+                      confirmButtonText: 'Download',
+                      cancelButtonText: 'Cancel',
+                      confirmButtonColor: '#8b5cf6',
+                      cancelButtonColor: '#e5e7eb',
+                      showIcon: true
+                    });
+                    
+                    setLastResult(confirmResult.isConfirmed ? 'Downloading ✓' : 'Cancelled ✕');
+                  }}
+                >
+                  ⬇️ Purple Download
+                </DemoButton>
+              </div>
+            </div>
+
+            <CodeBlock 
+              code={`// Custom button colors with auto-tinted icons
+const result = await JAlerts.confirm({
+  title: 'Delete Item?',
+  message: 'This action cannot be undone.',
+  confirmButtonText: 'Delete',
+  cancelButtonText: 'Cancel',
+  confirmButtonColor: '#ef4444',  // Red button
+  cancelButtonColor: '#6b7280',   // Gray button
+  showIcon: true                   // Icon auto-tints to confirm button color
+});`} 
+              language="typescript" 
+            />
           </section>
 
           {/* API Reference */}

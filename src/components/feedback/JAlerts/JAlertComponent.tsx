@@ -103,6 +103,37 @@ const JAlertComponent: React.FC<JAlertComponentProps> = (props) => {
     if (props.customIcon) return props.customIcon;
     if (!props.showIcon) return null;
 
+    // Determine icon background color based on confirmButtonColor or type
+    const getIconBackground = () => {
+      if (props.confirmButtonColor) {
+        // Extract base color from custom color and create gradient
+        return props.confirmButtonColor;
+      }
+      const backgrounds: Record<string, string> = {
+        success: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+        error: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+        warning: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+        info: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+        question: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+      };
+      return backgrounds[props.type || 'info'];
+    };
+
+    const getIconShadow = () => {
+      if (props.confirmButtonColor) {
+        // Generate shadow based on custom color
+        return `0 10px 40px ${props.confirmButtonColor}40`;
+      }
+      const shadows: Record<string, string> = {
+        success: '0 10px 40px rgba(16, 185, 129, 0.3)',
+        error: '0 10px 40px rgba(239, 68, 68, 0.3)',
+        warning: '0 10px 40px rgba(245, 158, 11, 0.3)',
+        info: '0 10px 40px rgba(59, 130, 246, 0.3)',
+        question: '0 10px 40px rgba(139, 92, 246, 0.3)',
+      };
+      return shadows[props.type || 'info'];
+    };
+
     const iconMap = {
       success: (
         <div style={{
@@ -110,18 +141,18 @@ const JAlertComponent: React.FC<JAlertComponentProps> = (props) => {
           height: '80px',
           margin: '0 auto 24px',
           borderRadius: '50%',
-          background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+          background: getIconBackground(),
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: '0 10px 40px rgba(16, 185, 129, 0.3)',
+          boxShadow: getIconShadow(),
           animation: 'bounceIn 0.6s ease-out'
         }}>
           <svg style={{ width: '48px', height: '48px', color: '#ffffff' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={3} 
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={3}
               d="M5 13l4 4L19 7"
               style={{
                 strokeDasharray: 100,
@@ -138,18 +169,18 @@ const JAlertComponent: React.FC<JAlertComponentProps> = (props) => {
           height: '80px',
           margin: '0 auto 24px',
           borderRadius: '50%',
-          background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+          background: getIconBackground(),
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: '0 10px 40px rgba(239, 68, 68, 0.3)',
+          boxShadow: getIconShadow(),
           animation: 'bounceIn 0.6s ease-out'
         }}>
           <svg style={{ width: '48px', height: '48px', color: '#ffffff', animation: 'rotate 0.5s ease-out 0.3s' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={3} 
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={3}
               d="M6 18L18 6"
               style={{
                 strokeDasharray: 100,
@@ -157,10 +188,10 @@ const JAlertComponent: React.FC<JAlertComponentProps> = (props) => {
                 animation: 'xDraw 0.3s ease-out 0.3s forwards'
               }}
             />
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={3} 
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={3}
               d="M6 6l12 12"
               style={{
                 strokeDasharray: 100,
@@ -177,18 +208,18 @@ const JAlertComponent: React.FC<JAlertComponentProps> = (props) => {
           height: '80px',
           margin: '0 auto 24px',
           borderRadius: '50%',
-          background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+          background: getIconBackground(),
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: '0 10px 40px rgba(245, 158, 11, 0.3)',
+          boxShadow: getIconShadow(),
           animation: 'bounceIn 0.6s ease-out'
         }}>
           <svg style={{ width: '48px', height: '48px', color: '#ffffff', animation: 'warningPulse 2s ease-in-out infinite' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={3} 
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={3}
               d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
               style={{
                 animation: 'scaleIn 0.5s ease-out 0.3s backwards'
@@ -203,18 +234,18 @@ const JAlertComponent: React.FC<JAlertComponentProps> = (props) => {
           height: '80px',
           margin: '0 auto 24px',
           borderRadius: '50%',
-          background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+          background: getIconBackground(),
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: '0 10px 40px rgba(59, 130, 246, 0.3)',
+          boxShadow: getIconShadow(),
           animation: 'bounceIn 0.6s ease-out'
         }}>
           <svg style={{ width: '48px', height: '48px', color: '#ffffff', animation: 'infoPulse 2s ease-in-out infinite' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <circle 
-              cx="12" 
-              cy="12" 
-              r="9" 
+            <circle
+              cx="12"
+              cy="12"
+              r="9"
               strokeWidth={3}
               style={{
                 strokeDasharray: 60,
@@ -222,10 +253,10 @@ const JAlertComponent: React.FC<JAlertComponentProps> = (props) => {
                 animation: 'circleDraw 0.6s ease-out 0.3s forwards'
               }}
             />
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={3} 
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={3}
               d="M13 16h-1v-4h-1m1-4h.01"
               style={{
                 strokeDasharray: 20,
@@ -242,18 +273,18 @@ const JAlertComponent: React.FC<JAlertComponentProps> = (props) => {
           height: '80px',
           margin: '0 auto 24px',
           borderRadius: '50%',
-          background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+          background: getIconBackground(),
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: '0 10px 40px rgba(139, 92, 246, 0.3)',
+          boxShadow: getIconShadow(),
           animation: 'bounceIn 0.6s ease-out'
         }}>
           <svg style={{ width: '48px', height: '48px', color: '#ffffff', animation: 'questionBounce 1.5s ease-in-out infinite' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <circle 
-              cx="12" 
-              cy="12" 
-              r="9" 
+            <circle
+              cx="12"
+              cy="12"
+              r="9"
               strokeWidth={3}
               style={{
                 strokeDasharray: 60,
@@ -261,10 +292,10 @@ const JAlertComponent: React.FC<JAlertComponentProps> = (props) => {
                 animation: 'circleDraw 0.6s ease-out 0.3s forwards'
               }}
             />
-            <path 
-              strokeLinecap="round" 
-              strokeLinejoin="round" 
-              strokeWidth={3} 
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={3}
               d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01"
               style={{
                 strokeDasharray: 40,
@@ -283,7 +314,7 @@ const JAlertComponent: React.FC<JAlertComponentProps> = (props) => {
 
   const getAnimationClass = () => {
     if (!isVisible) return 'opacity-0 scale-95';
-    
+
     const animationMap = {
       fade: 'animate-fade-in',
       slide: 'animate-slide-in',
@@ -448,6 +479,26 @@ const JAlertComponent: React.FC<JAlertComponentProps> = (props) => {
       minWidth: '100px',
     };
 
+    // If it's the confirm button with custom color
+    if (isConfirmButton && props.confirmButtonColor) {
+      return { 
+        ...baseStyle, 
+        background: props.confirmButtonColor, 
+        color: '#ffffff',
+        boxShadow: `0 2px 8px ${props.confirmButtonColor}40`
+      };
+    }
+
+    // If it's the cancel button with custom color
+    if (!isConfirmButton && props.cancelButtonColor) {
+      return { 
+        ...baseStyle, 
+        background: props.cancelButtonColor, 
+        color: '#ffffff',
+        boxShadow: `0 2px 8px ${props.cancelButtonColor}40`
+      };
+    }
+
     // If it's the confirm button and no custom variant, use the alert type color
     if (isConfirmButton && !variant) {
       return { ...baseStyle, background: getTypeColor(), color: '#ffffff' };
@@ -514,15 +565,23 @@ const JAlertComponent: React.FC<JAlertComponentProps> = (props) => {
         {showCancel && (
           <button
             onClick={handleCancel}
-            style={getButtonStyle('secondary')}
+            style={getButtonStyle(props.cancelButtonColor ? undefined : 'secondary', false)}
             disabled={isLoading}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.background = '#e5e7eb';
+              if (props.cancelButtonColor) {
+                e.currentTarget.style.boxShadow = `0 4px 12px ${props.cancelButtonColor}60`;
+              } else {
+                e.currentTarget.style.background = '#e5e7eb';
+              }
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.background = '#f3f4f6';
+              if (props.cancelButtonColor) {
+                e.currentTarget.style.boxShadow = `0 2px 8px ${props.cancelButtonColor}40`;
+              } else {
+                e.currentTarget.style.background = '#f3f4f6';
+              }
             }}
           >
             {props.cancelButtonText || 'Cancel'}
@@ -604,7 +663,10 @@ const JAlertComponent: React.FC<JAlertComponentProps> = (props) => {
             width: props.width || '420px',
             animation: isVisible ? 'slideInRight 0.3s ease-out' : 'fadeOut 0.3s ease-out',
             border: '1px solid rgba(0, 0, 0, 0.08)',
-            borderTop: `4px solid ${getTypeBorderColor()}`,
+            overflowY: "hidden",
+            overflowX: "hidden",
+            position: "relative"
+            // borderTop: `4px solid ${getTypeBorderColor()}`,
           }}
         >
           {/* Animated top border */}
@@ -618,7 +680,7 @@ const JAlertComponent: React.FC<JAlertComponentProps> = (props) => {
             animation: 'toastBorderSlide 0.8s ease-out',
             transformOrigin: 'left',
           }} />
-          
+
           {props.timerProgressBar && (
             <div style={{ height: '4px', background: '#e5e7eb' }}>
               <div
@@ -754,10 +816,11 @@ const JAlertComponent: React.FC<JAlertComponentProps> = (props) => {
           transform: isVisible ? 'scale(1)' : 'scale(0.9)',
           opacity: isVisible ? 1 : 0,
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-          border: `3px solid ${getTypeBorderColor()}`,
+          overflowY: "hidden",
+          overflowX: "hidden",
         }}
       >
-        
+
         {/* Close button */}
         {props.showCloseButton && (
           <button

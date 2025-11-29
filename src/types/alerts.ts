@@ -23,6 +23,8 @@ export interface JAlertOptions {
   showCancelButton?: boolean;
   confirmButtonText?: string;
   cancelButtonText?: string;
+  confirmButtonColor?: string; // Custom color for confirm button (hex, rgb, or CSS color)
+  cancelButtonColor?: string;  // Custom color for cancel button (hex, rgb, or CSS color)
   buttons?: JAlertButton[];
   
   // Callbacks

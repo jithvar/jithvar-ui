@@ -84,21 +84,31 @@ export interface JTableApiParams {
   [key: string]: string | undefined; // Allow custom parameter mappings
 }
 
+
 export interface JTableProps {
   columns: JTableColumn[];
   
   // Data source - API
   apiUrl: string;
+  apiParams?: {
+    page?: string; // Custom parameter name for page (default: 'page')
+    pageSize?: string; // Custom parameter name for pageSize (default: 'pageSize')
+    limit?: string; // Custom parameter name for limit (used if pageSize not provided, e.g., for MongoDB-style APIs)
+    sortColumn?: string; // Custom parameter name for sort column (default: 'sortColumn')
+    sortDirection?: string; // Custom parameter name for sort direction (default: 'sortDirection')
+    universalSearch?: string; // Custom parameter name for search (default: 'search')
+    [key: string]: any; // Allow other custom parameters
+  };
   apiHeaders?: Record<string, string>;
   dataPath?: string; // Path to data array in API response (e.g., 'data', 'results', 'masters')
   totalPath?: string; // Path to total count in API response (e.g., 'total', 'totalRecords', 'totalMasters')
   enableUrlState?: boolean; // Enable URL state management (default: true)
-  apiParams?: JTableApiParams; // Custom API parameter mapping
   
   // Search & Filter
   enableUniversalSearch?: boolean;
   universalSearchPlaceholder?: string;
   enableColumnSearch?: boolean;
+  searchMode?: 'exact' | 'like' | 'startsWith' | 'endsWith';
   
   // Selection
   enableSelection?: boolean;
@@ -145,6 +155,5 @@ export interface JTableProps {
   bordered?: boolean;
   compact?: boolean;
 }
-
 // JAlerts Types
 export type { JAlertOptions, JAlertButton, JAlertResult } from './alerts';
