@@ -154,6 +154,8 @@ export interface JTableProps {
   hover?: boolean;
   bordered?: boolean;
   compact?: boolean;
+
+  withCredentials?: boolean
 }
 // JAlerts Types
 export type { JAlertOptions, JAlertButton, JAlertResult } from './alerts';
