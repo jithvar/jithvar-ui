@@ -1,6 +1,6 @@
 {
   "name": "jithvar-ui",
-  "version": "1.0.1-beta.1",
+  "version": "1.0.1-beta.2",
   "description": "Professional React component library with 34 production-ready components including 20 interactive charts, advanced form inputs, data tables, and enterprise-grade UI tools. Built with TypeScript for Next.js and React applications. Supports React 17, 18, and 19. NEW: Enhanced JTable with custom API parameter mapping, improved skeleton loading, and better floating actions.",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
