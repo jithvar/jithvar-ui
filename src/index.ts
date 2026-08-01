@@ -91,3 +91,4 @@ export { JTable as DataTable } from './components/data/JTable/JTable';
 export type { JTableColumn as Column, JTableProps as DataTableProps } from './types';
 
 export {  debounce, classNames,  formatDate } from './utils/helpers';
+

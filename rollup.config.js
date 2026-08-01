@@ -5,22 +5,29 @@ import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import postcss from 'rollup-plugin-postcss';
 
 export default {
-  input: 'src/index.ts',
-  output: [
-    {
-      file: 'dist/index.js',
-      format: 'cjs',
-      sourcemap: true,
-    },
-    {
-      file: 'dist/index.esm.js',
-      format: 'esm',
-      sourcemap: true,
-    },
-  ],
+  input: {
+  index: "src/index.ts",
+  server: "src/server.ts",
+},
+output: [
+  {
+    dir: "dist",
+    format: "esm",
+    entryFileNames: "[name].esm.js",
+    sourcemap: true,
+  },
+  {
+    dir: "dist",
+    format: "cjs",
+    entryFileNames: "[name].js",
+    sourcemap: true,
+  },
+],
   plugins: [
     peerDepsExternal(),
-    resolve(),
+    resolve({
+  preferBuiltins: false,
+}),
     commonjs(),
     typescript({ tsconfig: './tsconfig.json' }),
     postcss({
@@ -29,5 +36,9 @@ export default {
       inject: true,
     }),
   ],
-  external: ['react', 'react-dom'],
+external: [
+  'react',
+  'react-dom',
+  'react/jsx-runtime'
+],
 };
