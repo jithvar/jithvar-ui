@@ -5,10 +5,9 @@ import { SeoData, ServerSeoProps } from './types';
 async function fetchSeoData(path: string, companyId: string, apiUrl: string): Promise<SeoData | null> {
   try {
     const url = `${apiUrl}?companyId=${companyId}&path=${encodeURIComponent(path)}`;
-    
+
     const response = await fetch(url, {
       headers: { 'Accept': 'application/json' },
-      cache: 'no-store',
     });
 
     if (!response.ok) {
@@ -22,7 +21,7 @@ async function fetchSeoData(path: string, companyId: string, apiUrl: string): Pr
   }
 }
 
-export async function ServerSeo({ 
+export async function ServerSeo({
   companyId,
   apiUrl,
   path = '/'
@@ -47,22 +46,22 @@ export async function ServerSeo({
     <>
       {/* Title */}
       {title && <title>{title}</title>}
-      
+
       {/* Meta Tags */}
       {data.metaDescription && <meta name="description" content={data.metaDescription} />}
 
       {data.metaKeywords && <meta name="keywords" content={data.metaKeywords} />}
-      
+
       {/* Open Graph */}
-     
+
       {data.ogTitle && <meta property="og:title" content={data.ogTitle} />}
-     
+
       {data.ogDescription && <meta property="og:description" content={data.ogDescription} />}
-      
+
       {data.ogImage && <meta property="og:image" content={data.ogImage} />}
- 
+
       {data.ogType && <meta property="og:type" content={data.ogType} />}
-      
+
       {/* Open Graph Extra */}
       {data.canonicalUrl && (
         <meta property="og:url" content={data.canonicalUrl} />
@@ -70,35 +69,35 @@ export async function ServerSeo({
       {data.siteName && (
         <meta property="og:site_name" content={data.siteName} />
       )}
-      
-     
+
+
       {data.twitterCard && <meta name="twitter:card" content={data.twitterCard} />}
-   
+
       {data.twitterTitle && <meta name="twitter:title" content={data.twitterTitle} />}
-  
+
       {data.twitterDescription && <meta name="twitter:description" content={data.twitterDescription} />}
-     
+
       {data.twitterImage && <meta name="twitter:image" content={data.twitterImage} />}
-      
+
       {/* Twitter Extra */}
       {data.canonicalUrl && (
         <meta name="twitter:url" content={data.canonicalUrl} />
       )}
-      
+
       {/* Canonical */}
       {data.canonicalUrl && <link rel="canonical" href={data.canonicalUrl} />}
-      
+
       {/* Robots */}
       {(data.noIndex || data.noFollow) && (
-        <meta 
-          name="robots" 
+        <meta
+          name="robots"
           content={[
             data.noIndex ? 'noindex' : 'index',
             data.noFollow ? 'nofollow' : 'follow'
-          ].join(', ')} 
+          ].join(', ')}
         />
       )}
-      
+
       {/* Search Engine Verification */}
       {data.googleVerification && (
         <meta name="google-site-verification" content={data.googleVerification} />
@@ -106,7 +105,7 @@ export async function ServerSeo({
       {data.bingVerification && (
         <meta name="msvalidate.01" content={data.bingVerification} />
       )}
-      
+
       {/* Theme */}
       {data.themeColor && (
         <meta name="theme-color" content={data.themeColor} />
@@ -114,14 +113,14 @@ export async function ServerSeo({
       {data.colorScheme && (
         <meta name="color-scheme" content={data.colorScheme} />
       )}
-      
+
       {/* Mobile Web App */}
       <meta name="apple-mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-      
+
       {/* Referrer */}
       <meta name="referrer" content="strict-origin-when-cross-origin" />
-      
+
       {/* Google Analytics */}
       {data.googleAnalytics && (
         <>
@@ -141,7 +140,7 @@ gtag('config', '${data.googleAnalytics}');
           />
         </>
       )}
-      
+
       {/* Google Tag Manager */}
       {data.googleTagManager && (
         <script
@@ -161,17 +160,17 @@ f.parentNode.insertBefore(j,f);
           }}
         />
       )}
-      
+
       {/* Header Scripts */}
       {data.headerScripts && (
         <div dangerouslySetInnerHTML={{ __html: data.headerScripts }} />
       )}
-      
+
       {/* Body Scripts */}
       {data.bodyScripts && (
         <div dangerouslySetInnerHTML={{ __html: data.bodyScripts }} />
       )}
-    
+
       {data.organizationSchema && (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data.organizationSchema) }} />
       )}
