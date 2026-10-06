@@ -114,6 +114,11 @@ export async function ServerSeo({
         <meta name="color-scheme" content={data.colorScheme} />
       )}
 
+
+      {data.serviceSchema && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data.serviceSchema) }} />
+      )}
+
       {/* Mobile Web App */}
       <meta name="apple-mobile-web-app-capable" content="yes" />
       <meta name="apple-mobile-web-app-status-bar-style" content="default" />
@@ -174,6 +179,11 @@ f.parentNode.insertBefore(j,f);
       {data.organizationSchema && (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data.organizationSchema) }} />
       )}
+
+      {data.webPageSchema && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data.webPageSchema) }} />
+      )}
+
       {data.breadcrumbSchema && (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data.breadcrumbSchema) }} />
       )}
@@ -186,6 +196,15 @@ f.parentNode.insertBefore(j,f);
       {data.customSchema && (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data.customSchema) }} />
       )}
+
+      {data.listingSchema && (
+  <script
+    type="application/ld+json"
+    dangerouslySetInnerHTML={{
+      __html: JSON.stringify(data.listingSchema)
+    }}
+  />
+)}
     </>
   );
 }

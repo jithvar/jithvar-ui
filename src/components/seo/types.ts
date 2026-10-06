@@ -30,6 +30,8 @@ export interface SeoData {
   faqSchema?: any;
   customSchema?: any;
   _debug?: any;
+  serviceSchema?: any;
+    webPageSchema?: any;
 }
 
 export interface ServerSeoProps {
