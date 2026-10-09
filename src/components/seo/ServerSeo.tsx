@@ -197,14 +197,7 @@ f.parentNode.insertBefore(j,f);
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data.customSchema) }} />
       )}
 
-      {data.listingSchema && (
-  <script
-    type="application/ld+json"
-    dangerouslySetInnerHTML={{
-      __html: JSON.stringify(data.listingSchema)
-    }}
-  />
-)}
+ 
     </>
   );
 }
